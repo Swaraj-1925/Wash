@@ -5,6 +5,7 @@
 #ifndef WASH_CONSTANTS_H
 #define WASH_CONSTANTS_H
 
+#include <iostream>
 // notcurses_option margin values
 #define TERM_TYPE NULL
 // Margins
@@ -19,5 +20,9 @@
 
 // Notcurses Flags
 #define FLAGS (NCOPTION_SUPPRESS_BANNERS | NCOPTION_INHIBIT_SETLOCALE)
+
+// Shell
+std::string SHELL = "[WASH]";
+int SHELL_x = SHELL.length();
 
 #endif //WASH_CONSTANTS_H

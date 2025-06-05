@@ -10,8 +10,8 @@ pkg_check_modules(NOTCURSES REQUIRED IMPORTED_TARGET notcurses++ notcurses-core)
 
 add_executable(Wash
         main.cpp
-        src/settings/constants.h
-        src/settings/options.h
+        src/utils/constants.h
+        src/utils/options.h
 )
 
 target_link_libraries(Wash

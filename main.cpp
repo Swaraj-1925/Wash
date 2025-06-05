@@ -3,9 +3,10 @@
 #include <iostream>
 #include <ncpp/NotCurses.hh>
 #include <ncpp/Plane.hh>
+#include <chrono>
 
 
-#include "src/settings/options.h"
+#include "src/utils/options.h"
 #include "src/shell.cpp"
 int main() {
     if (setlocale(LC_ALL, "") == nullptr) {
@@ -17,18 +18,15 @@ int main() {
     if (!nc) return EXIT_FAILURE;
 
 
-    ncpp::Plane* std_plane = nc.get_stdplane();
-    if (!std_plane) {
+    ncpp::Plane* p_std_plane = nc.get_stdplane();
+    if (!p_std_plane) {
         nc.stop();
         std::cerr << "Failed to get std_plane \n";
         return EXIT_FAILURE;
     }
-    int shell_result = shell(std_plane,nc);
 
-    if (nc.render()) {
-        nc.stop();
-        return EXIT_FAILURE;
-    }
-    nc.stop();
-    return EXIT_SUCCESS;
+    Shell sh(p_std_plane,nc);
+    int shell_result = sh.runShell();
+
+    return shell_result;
 }
