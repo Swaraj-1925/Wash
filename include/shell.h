@@ -1,0 +1,42 @@
+//
+// Created by swaraj on 6/5/25.
+//
+
+#ifndef WASH_SHELL_H
+#define WASH_SHELL_H
+#include <ncpp/NotCurses.hh>
+#include <vector>
+#include <chrono>
+#include "options.h"
+class Shell {
+public:
+    Shell(ncpp::Plane *p_stdPlane, ncpp::NotCurses &nc);
+    ~Shell();
+
+    int runShell();
+
+private:
+    void status_line();
+    static void handle_ctrl_c(int sig);
+
+    ncpp::Plane* m_p_StdPlane;
+    ncpp::Plane* main_plane;
+    ncpp::Plane* p_status_line;
+
+    std::chrono::time_point<std::chrono::system_clock> start;
+    ncpp::NotCurses &m_Nc;
+    ncinput m_NcIn;
+
+    unsigned m_DimY, m_DimX;
+    bool m_Quite = false;
+    uint32_t m_Key;
+
+    int m_Line = 0;
+    std::string m_Prompt;
+    std::vector<std::string> m_PromptLines;
+    const std::string SHELL = "[WASH]~ ";
+    const int SHELL_x = SHELL.length();
+
+    static int ctrl_c_press_count ;
+};
+#endif //WASH_SHELL_H

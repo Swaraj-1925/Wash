@@ -6,8 +6,9 @@
 #include <chrono>
 
 
-#include "src/utils/options.h"
-#include "src/shell.cpp"
+#include "options.h"
+#include <shell.h>
+
 int main() {
     if (setlocale(LC_ALL, "") == nullptr) {
         return EXIT_FAILURE;
@@ -27,6 +28,5 @@ int main() {
 
     Shell sh(p_std_plane,nc);
     int shell_result = sh.runShell();
-
     return shell_result;
 }

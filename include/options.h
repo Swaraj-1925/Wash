@@ -22,18 +22,27 @@ static struct notcurses_options default_notcurses_options() {
     return nc_opts;
 }
 
-static struct ncplane_options main_plane_option(unsigned dim_x, unsigned dim_y) {
+
+
+static struct ncplane_options default_main_plain_option(unsigned DimX, unsigned DimY) {
     ncplane_options nc_opts{};
     nc_opts.y = 0;
     nc_opts.x = 0;
-    nc_opts.rows = 3;
-    nc_opts.cols = dim_x - 4;
-    nc_opts.userptr = nullptr;
-    nc_opts.name = "reader";
-    nc_opts.resizecb = nullptr;
-    nc_opts.flags = 0;
-    nc_opts.margin_b = 0;
-    nc_opts.margin_r = 0;
+    nc_opts.rows = DimX;
+    nc_opts.cols = DimY;
+    nc_opts.name = "main_plain";
+    nc_opts.flags = MAIN_PLAIN_FLAGS;
+
+    return nc_opts;
+}
+static struct ncplane_options default_status_line_option(unsigned DimX, unsigned DimY) {
+    ncplane_options nc_opts{};
+    nc_opts.y = DimX-1;
+    nc_opts.x = 0;
+    nc_opts.rows = 1;
+    nc_opts.cols = DimY;
+    nc_opts.name = "status_line";
+
     return nc_opts;
 }
 

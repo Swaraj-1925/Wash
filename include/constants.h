@@ -21,8 +21,7 @@
 // Notcurses Flags
 #define FLAGS (NCOPTION_SUPPRESS_BANNERS | NCOPTION_INHIBIT_SETLOCALE)
 
-// Shell
-std::string SHELL = "[WASH]";
-int SHELL_x = SHELL.length();
+// main plain Flags
+#define MAIN_PLAIN_FLAGS (NCPLANE_OPTION_VSCROLL | NCPLANE_OPTION_AUTOGROW)
 
 #endif //WASH_CONSTANTS_H

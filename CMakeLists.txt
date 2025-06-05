@@ -7,11 +7,14 @@ set(CMAKE_CXX_STANDARD 20)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(NOTCURSES REQUIRED IMPORTED_TARGET notcurses++ notcurses-core)
 
-
+include_directories(
+        include
+        src/utils
+)
 add_executable(Wash
         main.cpp
-        src/utils/constants.h
-        src/utils/options.h
+        src/shell.cpp
+        src/status_line.cpp
 )
 
 target_link_libraries(Wash
