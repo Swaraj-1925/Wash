@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <ncpp/NotCurses.hh>
+#include <ncpp/Reel.hh>
 
 #include "options.h"
 #include "theme.h"
@@ -27,20 +28,23 @@ private:
 
     ncpp::Plane *m_p_StdPlane;
     ncpp::Plane *m_p_StatusLinePlane;
-//    ncpp::NcReel m_p_StatusLineReel;
+
+    ncplane_options m_StatusLinePlaneOpts;
+    ncreel_options m_ReelOpts;
 
     unsigned m_DimX,m_DimY;
     Theme theme;
     int add_tab(const std::string &title);
 
 public:
-    StatusLine(ncpp::Plane *std_plane,unsigned &dim_x,unsigned &dim_y);
+
+    StatusLine();
+    StatusLine(ncpp::Plane *std_plane,unsigned &dim_y,unsigned &dim_x);
     ~StatusLine();
 
+    ncpp::NcReel *m_StatusLineReel;
     enum T_Mode m_mode = M_VISUAL;
     std::vector<std::string> m_promote_history;
-
-    int render_status_line();
 };
 
 

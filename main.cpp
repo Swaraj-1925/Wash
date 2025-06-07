@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ncpp/NotCurses.hh>
 #include <ncpp/Plane.hh>
-#include <chrono>
+#include <string>
 
 
 #include "options.h"
@@ -17,6 +17,8 @@ int main() {
     struct notcurses_options nc_opts = default_notcurses_options();
 
     ncpp::NotCurses nc(nc_opts);
+    unsigned DimY,DimX;
+    nc.get_term_dim(&DimY, &DimX);
     if (!nc) return EXIT_FAILURE;
 
 
@@ -34,7 +36,7 @@ int main() {
         return EXIT_FAILURE;
     }
 
-    Shell sh(p_std_plane,nc);
+    Shell sh(p_std_plane,nc,DimY,DimX);
     int shell_result = sh.run_shell();
     return shell_result;
 }

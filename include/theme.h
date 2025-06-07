@@ -19,7 +19,7 @@ struct ThemeColor {
 struct Theme {
     // Background layers
     ThemeColor TERM_BG= ThemeColor(0x181926);
-    ThemeColor STATUS_BG = ThemeColor(0X1e2030);
+    ThemeColor STATUS_BG = ThemeColor(0xdf8e1d);
     ThemeColor TEXT1 = ThemeColor(0xa5adcb);
 };
 

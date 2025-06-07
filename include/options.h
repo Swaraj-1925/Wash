@@ -29,20 +29,19 @@ static struct ncplane_options default_main_plain_option(unsigned DimX, unsigned 
     ncplane_options nc_opts{};
     nc_opts.y = 0;
     nc_opts.x = 0;
-    nc_opts.rows = DimY;
-    nc_opts.cols = DimX-2;
+    nc_opts.rows = DimY-3;
+    nc_opts.cols = DimX;
     nc_opts.name = "main_plain";
 //    nc_opts.flags = MAIN_PLAIN_FLAGS;
 
     return nc_opts;
 }
-static struct ncplane_options default_status_line_option(unsigned DimX, unsigned DimY) {
+static struct ncplane_options default_status_line_option(unsigned DimY, unsigned DimX) {
     ncplane_options nc_opts{};
-
-    nc_opts.y = DimY - 1;
+    nc_opts.y = DimY - 3;
     nc_opts.x = 0;
-    nc_opts.rows = 1;
-    nc_opts.cols = DimY;
+    nc_opts.rows = 3;
+    nc_opts.cols = DimX;
     nc_opts.name = "status_line";
 
     return nc_opts;
@@ -52,7 +51,7 @@ static struct ncreel_options default_status_line_reel_option() {
     ncreel_options nc_opts{};
     ncchannels_set_fg_rgb(&nc_opts.focusedchan, 0xffffff);
     ncchannels_set_bg_rgb(&nc_opts.focusedchan, 0x00c080);
-    ncchannels_set_fg_rgb(&nc_opts.borderchan, 0x00c080);
+    ncchannels_set_fg_rgb(&nc_opts.borderchan, 0x181926);
 
     return nc_opts;
 }

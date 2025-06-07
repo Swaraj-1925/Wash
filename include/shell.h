@@ -13,7 +13,7 @@
 #include "status_line.h"
 class Shell {
 public:
-    Shell(ncpp::Plane *p_stdPlane, ncpp::NotCurses &nc);
+    Shell(ncpp::Plane *p_stdPlane, ncpp::NotCurses &nc,unsigned DimY,unsigned DimX);
     ~Shell();
 
     int run_shell();
@@ -23,6 +23,10 @@ private:
 
     ncpp::Plane* m_p_StdPlane;
     ncpp::Plane* m_p_MainPlane;
+    ncpp::Plane *m_p_StatusLinePlane;
+
+
+    std::unique_ptr<ncpp::NcReel> m_StatusLineReel;
 
     std::chrono::time_point<std::chrono::system_clock> m_Start;
     ncpp::NotCurses &m_Nc;
@@ -40,6 +44,6 @@ private:
 
     static int ctrl_c_press_count ;
 
-    std::unique_ptr<StatusLine> i_p_StatusLine ;
+    StatusLine i_p_StatusLine ;
 };
 #endif //WASH_SHELL_H
