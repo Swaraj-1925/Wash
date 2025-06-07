@@ -7,6 +7,7 @@
 
 
 #include "options.h"
+#include "theme.h"
 #include <shell.h>
 
 int main() {
@@ -19,7 +20,14 @@ int main() {
     if (!nc) return EXIT_FAILURE;
 
 
+
     ncpp::Plane* p_std_plane = nc.get_stdplane();
+    Theme theme;
+    if (!p_std_plane->set_bg_rgb8(theme.TERM_BG.get_r(),theme.TERM_BG.get_g(),theme.TERM_BG.get_g() )){
+        nc.stop();
+        std::cerr<<"not abel to set color";
+        return EXIT_FAILURE;
+    }
     if (!p_std_plane) {
         nc.stop();
         std::cerr << "Failed to get std_plane \n";
@@ -27,6 +35,6 @@ int main() {
     }
 
     Shell sh(p_std_plane,nc);
-    int shell_result = sh.runShell();
+    int shell_result = sh.run_shell();
     return shell_result;
 }

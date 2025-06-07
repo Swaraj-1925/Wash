@@ -5,7 +5,6 @@
 #ifndef WASH_CONSTANTS_H
 #define WASH_CONSTANTS_H
 
-#include <iostream>
 // notcurses_option margin values
 #define TERM_TYPE NULL
 // Margins

@@ -2,31 +2,29 @@
 // Created by swaraj on 6/4/25.
 //
 #include <shell.h>
+#include "theme.h"
 
 
 Shell::Shell(ncpp::Plane *p_stdPlane, ncpp::NotCurses &nc)
-        : m_p_StdPlane(p_stdPlane), m_Nc(nc) {
-    m_Nc.get_term_dim(&m_DimX, &m_DimY);
-    start = std::chrono::high_resolution_clock::now();
+        : m_p_StdPlane(p_stdPlane),
+        m_Nc(nc)
+        {
 
-    struct ncplane_options main_plane_opts = default_main_plain_option(m_DimX, m_DimY);
-    main_plane = new ncpp::Plane(*m_p_StdPlane, &main_plane_opts);
+    m_Nc.get_term_dim(&m_DimY, &m_DimX);
+    m_Start = std::chrono::high_resolution_clock::now();
+
+
+    struct ncplane_options main_plane_opts = default_main_plain_option(m_DimY, m_DimX);
+    m_p_MainPlane = new ncpp::Plane(*m_p_StdPlane, &main_plane_opts);
+//    m_p_MainPlane->printf(m_DimY-1,ncpp::NCAlign::Left,"y: %d , x: %d",m_DimY,m_DimX);
+    i_p_StatusLine = std::make_unique<StatusLine>(m_p_StdPlane, m_DimY, m_DimX);
+
 }
 Shell::~Shell() {
     m_Nc.stop();
     auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::seconds>( end - start );
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(end - m_Start );
     std::cout << "Wash shell exited successfully! , it was active for " << duration << " seconds \n";
-
-}
-void Shell::status_line () {
-    struct ncplane_options status_line_opts = default_status_line_option(m_DimX, m_DimY);
-    p_status_line = new ncpp::Plane(m_p_StdPlane, status_line_opts);
-
-    p_status_line->set_fg_rgb8(100,255,255);
-    p_status_line->set_bg_rgb8(0,0,0);
-    p_status_line->printf(0,0, "INSERT");
-    m_Nc.render();
 
 }
 
@@ -36,7 +34,19 @@ void Shell::handle_ctrl_c(int sig) {
 }
 
 
-int Shell::runShell() {
+int Shell::run_shell() {
+
+    if (!m_p_MainPlane){
+        m_Nc.stop();
+        return EXIT_FAILURE;
+    }
+    Theme theme;
+//    if (!m_p_MainPlane->set_bg_rgb8(theme.TERM_BG.get_r(),theme.TERM_BG.get_g(),theme.TERM_BG.get_g() )){
+//        m_Nc.stop();
+//        std::cerr<<"not abel to set color";
+//        return EXIT_FAILURE;
+//    }
+
     if (signal(SIGINT, Shell::handle_ctrl_c) == SIG_ERR) {
         std::cerr << "Failed to set SIGINT handler" << std::endl;
         return EXIT_FAILURE;
@@ -44,11 +54,12 @@ int Shell::runShell() {
 
     while (!m_Quite) {
         if (ctrl_c_press_count >= 3) break;
-        main_plane->printf(m_Line, ncpp::NCAlign::Left, "%s", SHELL.c_str());
-        main_plane->printf(m_Line, SHELL_x, "%s", m_Prompt.c_str());
-        m_Nc.render();
+        m_p_MainPlane->printf(m_Line, ncpp::NCAlign::Left, "%s", SHELL.c_str());
+        m_p_MainPlane->printf(m_Line, SHELL_x, "%s", m_Prompt.c_str());
 
-        status_line ();
+
+        i_p_StatusLine->render_status_line();
+        m_Nc.render();
         m_Key = m_Nc.get(false, &m_NcIn);
 
         switch (m_Key) {
@@ -60,7 +71,7 @@ int Shell::runShell() {
                 break;
             case NCKEY_ENTER:
                 m_Line++;
-                m_PromptLines.push_back(m_Prompt);
+                m_PromptHistory.push_back(m_Prompt);
                 m_Prompt.clear();
                 break;
             case NCKEY_BACKSPACE:
@@ -68,10 +79,10 @@ int Shell::runShell() {
                     m_Prompt.pop_back();
                     // Erase old line
                     // ncplane_erase_region(*m_p_StdPlane,m_Line,-1,INT_MAX,0); // causes flickering
-                    std::string clear_line(m_DimX- SHELL_x, ' ');
+                std::string clear_line(m_DimY- SHELL_x, ' ');
 
-                    main_plane->printf(m_Line, SHELL_x, "%s", clear_line.c_str());
-                    main_plane->printf(m_Line, SHELL_x, "%s", m_Prompt.c_str());
+                    m_p_MainPlane->printf(m_Line, SHELL_x, "%s", clear_line.c_str());
+                    m_p_MainPlane->printf(m_Line, SHELL_x, "%s", m_Prompt.c_str());
                     m_Nc.render();
                     break;
                 }
