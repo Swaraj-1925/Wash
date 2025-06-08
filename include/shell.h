@@ -8,42 +8,50 @@
 #include <ncpp/NotCurses.hh>
 #include <vector>
 #include <chrono>
-#include "options.h"
 
+#include "options.h"
 #include "status_line.h"
+#include "tab.h"
+
 class Shell {
 public:
     Shell(ncpp::Plane *p_stdPlane, ncpp::NotCurses &nc,unsigned DimY,unsigned DimX);
     ~Shell();
 
+
+    std::vector<Tab> m_Tabs;
+
+    struct Tab m_Tab;
+
     int run_shell();
-
 private:
-    static void handle_ctrl_c(int sig);
-
-    ncpp::Plane* m_p_StdPlane;
-    ncpp::Plane* m_p_MainPlane;
-    ncpp::Plane *m_p_StatusLinePlane;
-
-
-    std::unique_ptr<ncpp::NcReel> m_StatusLineReel;
 
     std::chrono::time_point<std::chrono::system_clock> m_Start;
+
+    ncpp::Plane *m_p_StdPlane;
+
     ncpp::NotCurses &m_Nc;
     ncinput m_NcIn;
-
     unsigned m_DimY, m_DimX;
     bool m_Quite = false;
     uint32_t m_Key;
 
     int m_Line = 0;
     std::string m_Prompt;
-    std::vector<std::string> m_PromptHistory;
+
     const std::string SHELL = "[WASH]~ ";
     const int SHELL_x = SHELL.length();
 
+    Theme t;
     static int ctrl_c_press_count ;
-
     StatusLine i_p_StatusLine ;
+
+
+
+    static void handle_ctrl_c(int sig);
+    int create_tab();
+    struct Tab get_active_tab();
+
+
 };
 #endif //WASH_SHELL_H

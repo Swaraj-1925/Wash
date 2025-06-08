@@ -17,10 +17,14 @@ struct ThemeColor {
 
 // Background layers
 struct Theme {
-    // Background layers
-    ThemeColor TERM_BG= ThemeColor(0x181926);
-    ThemeColor STATUS_BG = ThemeColor(0xdf8e1d);
-    ThemeColor TEXT1 = ThemeColor(0xa5adcb);
+    // Crust layers
+    ThemeColor TERM_CRUST_BG= ThemeColor(0x181926);
+    ThemeColor TERM_MANTLE_BG = ThemeColor(0x1e2030);
+    ThemeColor TERM_BASE_BG = ThemeColor(0x303446);
+
+    ThemeColor SURFACE_BG1 = ThemeColor(0x51576d);
+    ThemeColor TEXT0 = ThemeColor(0xcad3f5);
+    ThemeColor TEXT1 = ThemeColor(0xcad3f5);
 };
 
 // Default LIGHT theme of terminal inspired by

@@ -22,14 +22,16 @@ int main() {
     if (!nc) return EXIT_FAILURE;
 
 
-
     ncpp::Plane* p_std_plane = nc.get_stdplane();
     Theme theme;
-    if (!p_std_plane->set_bg_rgb8(theme.TERM_BG.get_r(),theme.TERM_BG.get_g(),theme.TERM_BG.get_g() )){
-        nc.stop();
-        std::cerr<<"not abel to set color";
-        return EXIT_FAILURE;
-    }
+
+    ncpp::Cell base(' ');
+    base.set_bg_rgb8(theme.TERM_CRUST_BG.get_r(),
+                     theme.TERM_CRUST_BG.get_g(),
+                     theme.TERM_CRUST_BG.get_b());
+    p_std_plane->set_base_cell(base);
+    p_std_plane->erase();
+
     if (!p_std_plane) {
         nc.stop();
         std::cerr << "Failed to get std_plane \n";
