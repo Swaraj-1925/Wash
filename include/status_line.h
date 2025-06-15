@@ -17,22 +17,26 @@
 
 class StatusLine{
 private:
-
     ncpp::Plane *m_p_StdPlane;
     ncpp::Plane *m_p_StatusLinePlane;
 
-    unsigned m_DimX,m_DimY;
+    unsigned m_DimX = 0,m_DimY = 0;
     Theme theme;
 
     std::string get_mode();
 
     std::vector<std::string> m_promote_history;
 public:
-    StatusLine();
+    bool m_Status = false;
+public:
+    StatusLine() = default;
     StatusLine(ncpp::Plane *std_plane, unsigned &dim_y, unsigned &dim_x);
-    ~StatusLine();
+    ~StatusLine() = default;
 
     int render_status_line(std::vector<Tab> &tabs);
+    void clear_status_line(ncpp::NotCurses* nc);
+    void toggle_status();
+
 
 };
 

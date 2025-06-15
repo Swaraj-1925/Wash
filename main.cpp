@@ -17,6 +17,11 @@ int main() {
     struct notcurses_options nc_opts = default_notcurses_options();
 
     ncpp::NotCurses nc(nc_opts);
+    if(!nc){
+        std::cout<<"not abel to get not curser";
+        return EXIT_FAILURE;
+
+    }
     unsigned DimY,DimX;
     nc.get_term_dim(&DimY, &DimX);
     if (!nc) return EXIT_FAILURE;

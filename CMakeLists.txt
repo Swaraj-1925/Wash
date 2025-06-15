@@ -9,12 +9,13 @@ pkg_check_modules(NOTCURSES REQUIRED IMPORTED_TARGET notcurses++ notcurses-core)
 
 include_directories(
         include
-        src/utils
 )
+
+file(GLOB SRC_FILES src/*.cpp)
+
 add_executable(Wash
         main.cpp
-        src/shell.cpp
-        src/status_line.cpp
+        ${SRC_FILES}
 )
 
 target_link_libraries(Wash
