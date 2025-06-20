@@ -13,12 +13,14 @@
 
 #include "options.h"
 #include "theme.h"
+#include "shortcut.h"
 #include "tab.h"
 
 class StatusLine{
 private:
     ncpp::Plane *m_p_StdPlane;
     ncpp::Plane *m_p_StatusLinePlane;
+    ncpp::Plane *m_p_ModePlane;
 
     unsigned m_DimX = 0,m_DimY = 0;
     Theme theme;
@@ -26,6 +28,15 @@ private:
     std::string get_mode();
 
     std::vector<std::string> m_promote_history;
+
+    bool m_Quite = false;
+
+    uint32_t m_Key;
+    ncinput m_NcIn;
+
+
+    std::string m_Command;
+    std::vector<std::string> m_CommandHistory;
 public:
     bool m_Status = false;
 public:
@@ -34,7 +45,7 @@ public:
     ~StatusLine() = default;
 
     int render_status_line(std::vector<Tab> &tabs);
-    void clear_status_line(ncpp::NotCurses* nc);
+    int status_line_command(ncpp::NotCurses* nc);
     void toggle_status();
 
 

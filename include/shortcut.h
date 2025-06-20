@@ -13,10 +13,12 @@
 
 // Shortcut conditions for input handling
 #define WS_ENTER (m_Key == NCKEY_ENTER)
-#define WS_BACKSPACE (m_Key == NCKEY_BACKSPACE && !m_Tab.m_Command.empty())
+#define WS_BACKSPACE (m_Key == NCKEY_BACKSPACE )
 #define WS_QUIT (m_Key == WS_KEY_QUIT && ncinput_ctrl_p(&m_NcIn))
 #define WS_TOGGLE_STATUS_LINE (m_Key == WS_KEY_TOGGLE_STATUS_LINE && ncinput_ctrl_p(&m_NcIn))
 #define WS_NEW_TAB (m_Key == WS_KEY_NEW_TAB)
 #define WS_STATUS_LINE_MCOMMAND (m_Key == WS_KEY_TOGGLE_STATUS_LINE_MCOMMAND)
+#define WS_MOVE_LEFT_TAB (m_Key == NCKEY_LEFT)
+#define WS_MOVE_RIGHT_TAB (m_Key == NCKEY_RIGHT)
 
 #endif //wash_shortcut_h

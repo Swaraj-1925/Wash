@@ -35,9 +35,9 @@ public:
     std::vector<std::string> m_CommandHistory;
     std::string m_CurrentPath;
 
+    ncpp::Plane* m_p_Plane = nullptr;
 private:
     ncpp::Plane *m_p_StdPlane = nullptr;
-    ncpp::Plane* m_p_Plane = nullptr;
 
     std::string m_HomeDir;
     std::string m_Username;
@@ -47,7 +47,7 @@ private:
 
 
 public:
-    Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, int tab_index);
+    Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name);
     Tab() = default;
     ~Tab() = default;
 
@@ -57,6 +57,7 @@ public:
     int handle_default(uint32_t m_Key);
 
     void handle_prompt();
+    std::string get_mode();
 
 private:
     void render_prompt(){}

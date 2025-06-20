@@ -2,6 +2,7 @@
 // Created by swaraj on 6/5/25.
 //
 
+#include <thread>
 #include "status_line.h"
 
 
@@ -11,7 +12,11 @@ StatusLine::StatusLine(ncpp::Plane *std_plane,unsigned &dim_y,unsigned &dim_x)
 :m_p_StdPlane(std_plane),m_DimY(dim_y), m_DimX(dim_x)
 {
     struct ncplane_options status_line_opts = default_statusLine_option(m_DimY, m_DimX);
+    struct ncplane_options mode_opts = default_mode_option(m_DimY, m_DimX);
+
     StatusLine::m_p_StatusLinePlane = new ncpp::Plane(m_p_StdPlane, status_line_opts);
+    StatusLine::m_p_ModePlane = new ncpp::Plane(m_p_StdPlane, mode_opts);
+
     ncpp::Cell base(' ');
     base.set_bg_rgb8(theme.TERM_MANTLE_BG.get_r(),
                      theme.TERM_MANTLE_BG.get_g(),
@@ -21,19 +26,21 @@ StatusLine::StatusLine(ncpp::Plane *std_plane,unsigned &dim_y,unsigned &dim_x)
                      theme.TEXT1.get_b());
 
     m_p_StatusLinePlane->set_base_cell(base);
+    m_p_ModePlane->set_base_cell(base);
     m_p_StatusLinePlane->erase();
-//    m_p_StatusLinePlane->release(base);
+    m_p_StatusLinePlane->release(base);
 }
 
 
 int StatusLine::render_status_line(std::vector<Tab> &tabs) {
     m_p_StatusLinePlane->erase();
-    int col = 0;  // X position to start printing from
-    for (const auto &t : tabs) {
+    std::string mode;
+    int col = 10;  // X position to start printing from
+    for (auto &t : tabs) {
         std::string label = " " + t.m_Name+ " ";
 
         if (t.m_Active) {
-            // Optional: highlight active tab
+            mode = t.get_mode();
             m_p_StatusLinePlane->set_fg_rgb8(255, 255, 255);  // White text
             m_p_StatusLinePlane->set_bg_rgb8(0, 128, 255);    // Blue background
         } else {
@@ -45,8 +52,9 @@ int StatusLine::render_status_line(std::vector<Tab> &tabs) {
         m_p_StatusLinePlane->printf(0, col, "%s", label.c_str());
         col += label.length();  // Move X position forward
     }
-
+    m_p_ModePlane->printf(0, 0, "%s", mode.c_str());
     m_p_StatusLinePlane->move_top();
+    m_p_ModePlane->move_top();
     m_p_StatusLinePlane->set_fg_default();
     m_p_StatusLinePlane->set_bg_default();
 
@@ -54,31 +62,48 @@ int StatusLine::render_status_line(std::vector<Tab> &tabs) {
     return EXIT_SUCCESS;
 
 }
-void StatusLine::clear_status_line(ncpp::NotCurses* nc) {
-    std::string  prompt_prefix = ":";
-    if (m_p_StatusLinePlane) {
-        m_p_StatusLinePlane->erase();
-        // Render any static parts of status line if needed, e.g. mode indicator
-        // Then draw the prompt prefix at column 0:
-        m_p_StatusLinePlane->printf(0, ncpp::NCAlign::Left, "%s", prompt_prefix.c_str());
-        // Move cursor to after prefix:
-        unsigned x = prompt_prefix.length();
-        m_p_StatusLinePlane->cursor_move(0, m_DimX);
+int StatusLine::status_line_command(ncpp::NotCurses* nc) {
+    if (!m_p_StatusLinePlane) return EXIT_FAILURE;
+    m_p_StatusLinePlane->erase();
 
-        ncreader_options ropts = {
-//                .tchannels = NCCHANNELS_INITIALIZER(0x00ffffff, 0), // white fg on black
-                .tattrword = NCSTYLE_BOLD,
-                .flags = NCREADER_OPTION_CURSOR | NCREADER_OPTION_HORSCROLL
-            };
-        ncreader *reader = ncreader_create(m_p_StatusLinePlane->to_ncplane(),&ropts);
+    std::string prompt_prefix = "COMMAND : ";
 
-        uint32_t m_Key;
-        ncinput m_NcIn;
-        while (1){
-            m_Key = nc->get(true,&m_NcIn);
-            m_p_StatusLinePlane->printf(0,NCALIGN_LEFT,"%d",m_Key);
+    unsigned promptLen = prompt_prefix.length();
+    unsigned row, col;
+    m_p_StatusLinePlane->get_dim(&row, &col);
+    nc->cursor_enable(col, row);
+
+    m_p_ModePlane->erase();
+    m_p_ModePlane->printf(0, 0, "%s", prompt_prefix.c_str());
+    m_p_StatusLinePlane->cursor_move(0, m_DimX);
+
+    nc->render();
+    while (!m_Quite) {
+        m_Key = nc->get(false, &m_NcIn);
+        if (WS_QUIT) {
+            m_Quite = true;
+        } else if (WS_ENTER) {
+            m_CommandHistory.push_back(m_Command);
+            m_Command.clear();
+            break;
+        } else {
+            int cursor_x = (int) promptLen + m_Command.length();
+            m_p_StatusLinePlane->cursor_move(0, cursor_x);
+
+            if (m_Key >= 32 && m_Key <= 126) {
+                m_Command += static_cast<char>(m_Key);
+            } else if (m_Key >= 0x80 && m_Key <= 0x10FFFF) {
+                unsigned char utf8_buf[5] = {0};
+                if (ncpp::NotCurses::ucs32_to_utf8(&m_Key, 1, utf8_buf, sizeof(utf8_buf))) {
+                    m_Command.append(reinterpret_cast<char *>(utf8_buf));
+                }
+            }
+            m_p_StatusLinePlane->printf(0, promptLen, "%s", m_Command.c_str());
+            nc->cursor_enable(col, cursor_x);
+            nc->render();
         }
     }
+    return EXIT_SUCCESS;
 }
 void StatusLine::toggle_status() {
     StatusLine::m_Status = !StatusLine::m_Status;

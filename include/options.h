@@ -49,12 +49,13 @@ static struct ncplane_options default_statusLine_option(unsigned DimY, unsigned 
     return nc_opts;
 }
 
-static struct ncplane_options default_prompt_option(unsigned DimY, unsigned DimX) {
+static struct ncplane_options default_mode_option(unsigned DimY, unsigned DimX) {
 
     ncplane_options nc_opts{};
+    nc_opts.y = DimY-1;
     nc_opts.x = 0;
     nc_opts.rows = 2;
-    nc_opts.cols = DimX;
+    nc_opts.cols = 10;
 
     nc_opts.userptr = nullptr;
     nc_opts.flags = NCPLANE_OPTION_FIXED;

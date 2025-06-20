@@ -23,7 +23,7 @@ public:
 
 
     std::vector<Tab> m_Tabs;
-    Tab m_Tab;
+    int m_TabIdx=0;
 
 
 public:

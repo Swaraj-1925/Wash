@@ -16,16 +16,14 @@ Shell::Shell(ncpp::Plane *p_stdPlane, ncpp::NotCurses &nc,unsigned DimY,unsigned
 
     m_Start = std::chrono::high_resolution_clock::now();
 
-    //create initial tab
-    Shell::m_Tab = Tab(m_p_StdPlane,m_DimY,m_DimX,0);
-    m_Tabs.push_back(m_Tab);
-
+    Shell::m_Tabs.reserve(10);
     //initialize status line
     i_p_StatusLine = StatusLine(m_p_StdPlane,m_DimY,m_DimX);
-    i_p_StatusLine.render_status_line(m_Tabs);
-//    Shell::create_tab();
+    Shell::create_tab();
     // setup courser and enable mouse
-    m_Nc.cursor_enable(m_Tab.m_Line,m_Tab.m_ShellLen);
+
+    Tab &curTab = m_Tabs[m_TabIdx];
+    m_Nc.cursor_enable(curTab.m_Line,curTab.m_ShellLen);
     m_Nc.mouse_enable(NCMICE_ALL_EVENTS);
 }
 Shell::~Shell() {
@@ -42,11 +40,11 @@ void Shell::handle_ctrl_c(int sig) {++ctrl_c_press_count;}
 
 int Shell::create_tab() {
     for (auto &tab : m_Tabs) {tab.m_Active = false;}
-    int tab_idx = (int)Shell::m_Tabs.size();
-    Tab newTab = Tab(m_p_StdPlane,m_DimY,m_DimX,tab_idx);
+    m_TabIdx = static_cast<int>(m_Tabs.size());
+    std::string  name = "Tab " + std::to_string(m_TabIdx);
+    Tab newTab = Tab(m_p_StdPlane,m_DimY,m_DimX,name);
     m_Tabs.push_back(newTab);
     i_p_StatusLine.render_status_line(m_Tabs);
-    Shell::m_Tab = newTab;
     return EXIT_SUCCESS;
 }
 

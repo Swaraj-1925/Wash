@@ -4,7 +4,7 @@
 
 #include "tab.h"
 
-Tab::Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, int tab_index)
+Tab::Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name)
 {
     Tab::m_p_StdPlane = std_plane;
 
@@ -26,7 +26,7 @@ Tab::Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, int tab_index)
     Tab::m_p_Plane->erase();
 
     Tab::m_Active = true;
-    Tab::m_Name = "Tab " + std::to_string(tab_index);
+    Tab::m_Name = name;
 
     // meta data
     struct passwd* pw = getpwuid(getuid());
@@ -55,4 +55,21 @@ void Tab::update_current_path() {
 void Tab::handle_prompt() {
     Tab::m_p_Plane->printf(Tab::m_Line,ncpp::NCAlign::Left, "%s", Tab::m_SHELL.c_str());
     Tab::m_p_Plane->printf(Tab::m_Line,Tab::m_ShellLen, "%s", Tab::m_Command.c_str());
+}
+
+std::string Tab::get_mode() {
+    switch (m_Mode) {
+        case 0:
+            return "INSERT";
+            break;
+        case 1:
+            return "COMMAND";
+            break;
+        case 2:
+            return "VISUAL";
+            break;
+        default:
+            return "UNKNOWN";
+            break;
+    }
 }
