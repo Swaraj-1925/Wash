@@ -4,6 +4,7 @@
 
 #ifndef WASH_CONSTANTS_H
 #define WASH_CONSTANTS_H
+#include <unordered_set>
 
 // notcurses_option margin values
 #define TERM_TYPE NULL

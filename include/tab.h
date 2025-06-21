@@ -10,10 +10,13 @@
 #include <ncpp/NotCurses.hh>
 #include <unordered_map>
 #include <sstream>
+#include <unistd.h>
+#include <pwd.h>
 
 #include "theme.h"
 #include "options.h"
 #include "command/command.h"
+#include "constants.h"
 // Terminal Modes
 enum T_Mode {
     M_INSERT,
@@ -36,9 +39,11 @@ public:
     std::vector<std::string> m_CommandHistory;
     std::string m_CurrentPath;
 
+    ncpp::Plane *m_p_OutputPlane = nullptr;
     ncpp::Plane* m_p_Plane = nullptr;
 private:
     ncpp::Plane *m_p_StdPlane = nullptr;
+    Output m_output;
 
     std::string m_HomeDir;
     std::string m_Username;
@@ -46,7 +51,13 @@ private:
 
     Theme t;
     std::unordered_map<std::string, std::shared_ptr<Command>> command_map;
+    unsigned DimY,DimX;
 
+    std::unordered_set<std::string> COMMAND_WITH_OUTPUT = {
+            "ls",
+            "echo",
+            "cat",
+    };
 public:
     Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name);
     Tab() = default;

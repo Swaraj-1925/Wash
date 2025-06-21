@@ -13,8 +13,10 @@ struct ThemeColor {
     uint8_t get_g() const { return (hex >> 8) & 0xFF; }  // Extract green (20)
     uint8_t get_b() const { return hex & 0xFF; }         // Extract blue (30)
 };
-// Default DARK theme of terminal inspired by Catppuccin Macchiato
 
+
+
+// Default DARK theme of terminal inspired by Catppuccin Macchiato
 // Background layers
 struct Theme {
     // Crust layers
@@ -24,7 +26,28 @@ struct Theme {
 
     ThemeColor SURFACE_BG1 = ThemeColor(0x51576d);
     ThemeColor TEXT0 = ThemeColor(0xcad3f5);
-    ThemeColor TEXT1 = ThemeColor(0xcad3f5);
+    ThemeColor SUB_TEXT1 = ThemeColor(0xbac2de);
+    ThemeColor SUB_TEXT0 = ThemeColor(0xa6adc8);
+
+    //permission
+    ThemeColor PEACH = ThemeColor(0xfab387);
+    //hyperlinks
+    ThemeColor TEAL = ThemeColor(0x94e2d5);
+    //user
+    ThemeColor YELLOW = ThemeColor(0xf9e2af);
+    //group
+    ThemeColor GREEN = ThemeColor(0xa6e3a1);
+    //time
+    ThemeColor MAROON = ThemeColor(0xeba0ac);
+    // normal file text 0
+
+    //excutable
+    ThemeColor SAPPHIRE = ThemeColor(0x74c7ec);
+    //syslink
+    ThemeColor BLUE = ThemeColor(0x89b4fa);
+
+    // dot files sub text 0
+
 };
 
 // Default LIGHT theme of terminal inspired by

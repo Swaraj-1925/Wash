@@ -1,26 +1,35 @@
 //
 // Created by swaraj on 6/20/25.
 //
+
 #include "command/cd.h"
 
-std::string CdCommand::execute(const std::vector<std::string>& args) {
+Output CdCommand::execute(const std::vector<std::string>& args) {
         parse_args(args);
+        if(invalid){
+            return Output {
+                400,
+                "cd, invalid flag"
+            };
+        }
         if (use_physical) {
             char resolved[PATH_MAX];
             if (realpath(path.c_str(), resolved) != nullptr) {
                 path = std::string(resolved);
             } else {
-                return "cd: cannot resolve path: " + path ;
+                return Output {
+                        400,
+                        "cd, cannot resolve path: " + path };
             }
         }
 
         if (check_exists && access(path.c_str(), F_OK) != 0) {
-            return "cd: path does not exist: " + path;
+            return Output{400, "cd, path does not exist: " + path};
         }
         if (chdir(path.c_str()) != 0) {
-            return "cd: " + path + ": "+ strerror(errno) + "\n";
+            return Output{400,"cd, " + path +  "\n"};
         }
-        return "200";
+        return Output{200};
     }
     void CdCommand::parse_args(const std::vector<std::string>& args) {
         for (const auto& arg : args) {
@@ -32,6 +41,8 @@ std::string CdCommand::execute(const std::vector<std::string>& args) {
                 check_exists = true;
             } else if (!arg.empty() && arg[0] != '-') {
                 path = arg;
+            } else{
+                invalid = true;
             }
         }
         if (path.empty()) {

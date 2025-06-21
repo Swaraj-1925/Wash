@@ -5,11 +5,12 @@
 #include "tab.h"
 
 Tab::Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name)
+:DimY(dim_y),DimX(dim_x)
 {
     Tab::m_p_StdPlane = std_plane;
 
 //     initialize plane
-    struct ncplane_options TabOpts = default_tab_option(dim_y, dim_x);
+    struct ncplane_options TabOpts = default_tab_option(DimY, DimX);
     Tab::m_p_Plane = new ncpp::Plane( *Tab::m_p_StdPlane, &TabOpts);
     Tab::m_p_Plane->set_scrolling(true);
     Tab::m_p_Plane->erase();
@@ -71,9 +72,15 @@ int Tab::parse_and_execute_command(const std::string &line) {
         Tab::m_p_Plane->printf(20,NCALIGN_CENTER,"Didnt find command: %s",cmd.c_str());
         return EXIT_FAILURE;
     }
-    std::string output = it->second->execute(args);
-    if(output.find("200") == std::string::npos){
+
+    Tab::m_output = it->second->execute(args);
+
+    if(Tab::m_output.status_code != 200){
         return EXIT_FAILURE;
+
+    } else if (COMMAND_WITH_OUTPUT.contains(cmd)){
+        int update_line = it->second->render_output(m_p_Plane,m_output,m_Line);
+        m_Line += update_line +1;
     }
     return EXIT_SUCCESS;
 }

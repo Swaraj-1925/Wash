@@ -25,12 +25,12 @@ static struct notcurses_options default_notcurses_options() {
 
 
 
-static struct ncplane_options default_tab_option(unsigned DimX, unsigned DimY) {
+static struct ncplane_options default_tab_option(unsigned DimY, unsigned DimX) {
     ncplane_options nc_opts{};
     nc_opts.y = 0;
     nc_opts.x = 0;
-    nc_opts.rows = DimY-2;
-    nc_opts.cols = DimX;
+    nc_opts.rows = DimX-2;
+    nc_opts.cols = DimY;
     nc_opts.name = "tab_plain";
     nc_opts.flags = MAIN_PLAIN_FLAGS;
 
@@ -60,6 +60,19 @@ static struct ncplane_options default_mode_option(unsigned DimY, unsigned DimX) 
     nc_opts.userptr = nullptr;
     nc_opts.flags = NCPLANE_OPTION_FIXED;
     nc_opts.name = "prompt";
+    return nc_opts;
+}
+static struct ncplane_options default_output_plane_option(int y,unsigned DimY, unsigned DimX ) {
+    ncplane_options nc_opts{};
+
+    nc_opts.y = y;
+    nc_opts.x = 1;
+    nc_opts.rows = DimY;
+    nc_opts.cols = DimX;
+
+    nc_opts.userptr = nullptr;
+    nc_opts.flags = NCPLANE_OPTION_FIXED;
+    nc_opts.name = "output";
     return nc_opts;
 }
 static struct ncplane_options default_statusLine_tab_option() {

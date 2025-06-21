@@ -7,4 +7,5 @@
 
 #include "tab.h"
 #include "cd.h"
+#include "ls.h"
 #endif //WASH_COMMAND_REGISTRY_H
