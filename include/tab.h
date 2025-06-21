@@ -8,11 +8,12 @@
 #include <string>
 #include <vector>
 #include <ncpp/NotCurses.hh>
-#include <pwd.h>
-#include <unistd.h>
+#include <unordered_map>
+#include <sstream>
 
 #include "theme.h"
 #include "options.h"
+#include "command/command.h"
 // Terminal Modes
 enum T_Mode {
     M_INSERT,
@@ -44,7 +45,7 @@ private:
     std::string m_HostName;
 
     Theme t;
-
+    std::unordered_map<std::string, std::shared_ptr<Command>> command_map;
 
 public:
     Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name);
@@ -60,6 +61,7 @@ public:
     std::string get_mode();
 
 private:
-    void render_prompt(){}
+    int parse_and_execute_command(const std::string& line);
+    void register_builtin_commands();
 };
 #endif //WASH_TAB_H

@@ -32,26 +32,51 @@ Tab::Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name
     struct passwd* pw = getpwuid(getuid());
     Tab::m_HomeDir = pw ? pw->pw_dir:"";
     Tab::m_Username = pw ? pw->pw_name:"unknown";
+
     Tab::m_CurrentPath = Tab::m_HomeDir;
 
     // initialize prompt
-    Tab::m_SHELL = "[" + m_Username + "@ " + m_CurrentPath + "]";
-    Tab::m_ShellLen = (int)Tab::m_SHELL.length() + 1;
+    Tab::update_current_path();
+    Tab::register_builtin_commands();
 }
 void Tab::update_current_path() {
-    if(m_CurrentPath == m_HomeDir) m_CurrentPath = "~";
-
     char cwd[PATH_MAX];
     getcwd(cwd, sizeof(cwd));
     std::string path(cwd);
 
     const char* home = getenv("HOME");
+
     if (home && path.find(home) == 0) {
         path.replace(0, strlen(home), "~");
     }
+
     Tab::m_CurrentPath = path;
+
+    Tab::m_SHELL = "[" + m_Username + "@ " + m_CurrentPath + "]";
+    Tab::m_ShellLen = (int)Tab::m_SHELL.length() + 1;
 }
 
+
+int Tab::parse_and_execute_command(const std::string &line) {
+    std::istringstream iss(line);
+    std::string cmd;
+    iss >> cmd;
+
+    std::vector<std::string> args;
+    std::string arg;
+    while (iss >> arg) args.push_back(arg);
+    auto it = command_map.find(cmd);
+
+    if ( it == command_map.end()) {
+        Tab::m_p_Plane->printf(20,NCALIGN_CENTER,"Didnt find command: %s",cmd.c_str());
+        return EXIT_FAILURE;
+    }
+    std::string output = it->second->execute(args);
+    if(output.find("200") == std::string::npos){
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
+}
 void Tab::handle_prompt() {
     Tab::m_p_Plane->printf(Tab::m_Line,ncpp::NCAlign::Left, "%s", Tab::m_SHELL.c_str());
     Tab::m_p_Plane->printf(Tab::m_Line,Tab::m_ShellLen, "%s", Tab::m_Command.c_str());

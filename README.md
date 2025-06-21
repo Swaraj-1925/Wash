@@ -4,16 +4,15 @@
 
 ## Features
 ----
--[X] Built Using Notcurses
--[ ] Parallel Command Execution
--[ ] Integrated Git
--[ ] Search for History
--[ ] Syntax Highlighting
--[ ] Autosuggestions
--[ ] Background customization 
--[ ] Font
--[ ] Modern UI 
-
+1. [x] Built Using Notcurses
+2. [ ] Parallel Command Execution
+3. [ ] Integrated Git
+4. [ ] Search for History
+5. [ ] Syntax Highlighting
+6. [ ] Autosuggestions
+7. [ ] Background customization 
+8. [ ] Font
+9. [x] Modern UI 
 
 ## References
 - **Notcurses** : 

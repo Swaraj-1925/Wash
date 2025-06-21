@@ -44,6 +44,7 @@ int Shell::create_tab() {
     std::string  name = "Tab " + std::to_string(m_TabIdx);
     Tab newTab = Tab(m_p_StdPlane,m_DimY,m_DimX,name);
     m_Tabs.push_back(newTab);
+    newTab.update_current_path();
     i_p_StatusLine.render_status_line(m_Tabs);
     return EXIT_SUCCESS;
 }
