@@ -8,7 +8,7 @@ Output LsCommand::execute(const std::vector<std::string> &args) {
     parse_args(args);
     char cwd[PATH_MAX];
     getcwd(cwd, sizeof(cwd));
-    LsCommand::path = cwd;
+    LsCommand::path = path.empty() ? cwd :path;
     try {
         for (const auto &entry: std::filesystem::directory_iterator(LsCommand::path)) {
             std::string name = entry.path().filename().string();
@@ -72,6 +72,7 @@ void LsCommand::parse_args(const std::vector<std::string> &args) {
     LsCommand::invalid = false;
     LsCommand::path.clear();
     LsCommand::files.clear();
+
     for (const auto& arg : args) {
         if (arg == "-a") LsCommand::show_all = true;
         else if (arg == "-l") LsCommand::long_format = true;

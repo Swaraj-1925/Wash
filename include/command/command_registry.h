@@ -8,4 +8,5 @@
 #include "tab.h"
 #include "cd.h"
 #include "ls.h"
+#include "echo.h"
 #endif //WASH_COMMAND_REGISTRY_H
