@@ -168,5 +168,5 @@ int LsCommand::render_output(ncpp::Plane *plane, Output output,int line) {
             plane->printf(++line,NCALIGN_LEFT, "%s", it.name.c_str());
         }
     }
-    return result.size();
+    return result.size() +1;
 }

@@ -58,6 +58,7 @@ private:
             "ls",
             "echo",
             "cat",
+            "mkdir"
     };
 public:
     Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name);

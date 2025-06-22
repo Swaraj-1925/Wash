@@ -9,4 +9,5 @@
 #include "cd.h"
 #include "ls.h"
 #include "echo.h"
+#include "mkdir.h"
 #endif //WASH_COMMAND_REGISTRY_H

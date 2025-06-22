@@ -10,6 +10,8 @@
 #include <pwd.h>
 #include <unistd.h>
 #include <variant>
+#include <filesystem>
+#include <sys/stat.h>
 
 struct FileInfo {
     std::string name ; // name of file
@@ -29,11 +31,12 @@ struct Output {
     std::string message = "";
     std::string stdout_output = "";  // renamed
     std::vector<FileInfo> file_info_output = {};
+    std::vector<std::string> string_output = {};
 };
 class Command  {
 public:
-    virtual Output execute(const std::vector<std::string>& args) = 0;
     virtual ~Command() = default;
+    virtual Output execute(const std::vector<std::string>& args) = 0;
     virtual int render_output(ncpp::Plane* plane,Output output,int line) = 0;
 };
 
