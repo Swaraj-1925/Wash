@@ -6,7 +6,6 @@
 Output MkdirCommand::execute(const std::vector<std::string> &args) {
     parse_args(args);
     Output result;
-    result.status_code = 200;
     for (const auto &dir : directories) {
         std::error_code ec;
         if (parents) {
@@ -15,14 +14,14 @@ Output MkdirCommand::execute(const std::vector<std::string> &args) {
             std::filesystem::create_directory(dir, ec);
         }
         if (ec) {
-            result.status_code = 500;
-            result.message += "mkdir: cannot create directory '" + dir + "': " + ec.message() + "\n";
+            result.status_code = FAILURE_VECTOR_OUTPUT;
+            result.lines_output.push_back( "mkdir: cannot create directory '" + dir + "': " + ec.message() + "\n");
         } else {
             if (set_mode) {
                 chmod(dir.c_str(), mode);
             }
             if (verbose) {
-                result.string_output.push_back("mkdir: created directory '" + dir );
+                result.lines_output.push_back("mkdir: created directory '" + dir );
             }
         }
     }
@@ -63,7 +62,7 @@ void MkdirCommand::parse_args(const std::vector<std::string> &args) {
     }
 }
 int MkdirCommand::render_output(ncpp::Plane *plane, Output output, int line) {
-    std::vector<std::string> result = output.string_output;
+    std::vector<std::string> result = output.lines_output;
     if (MkdirCommand::verbose){
         for (const auto &it: result) {
             plane->printf(line,NCALIGN_LEFT, "%s", it.c_str());

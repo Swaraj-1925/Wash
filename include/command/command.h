@@ -10,8 +10,15 @@
 #include <pwd.h>
 #include <unistd.h>
 #include <variant>
+#include <string>
+#include <vector>
 #include <filesystem>
 #include <sys/stat.h>
+#include <cerrno>
+#include <fcntl.h>
+#include <cstring>
+
+#include "constants.h"
 
 struct FileInfo {
     std::string name ; // name of file
@@ -27,11 +34,14 @@ struct FileInfo {
 
 };
 struct Output {
-    int status_code = 200;
-    std::string message = "";
-    std::string stdout_output = "";  // renamed
-    std::vector<FileInfo> file_info_output = {};
-    std::vector<std::string> string_output = {};
+    StatusCode status_code = SUCCESS;
+    std::string status_message = "";
+
+    std::vector<std::string> error_details = {};       // List of specific error messages (for debugging/logging)
+
+    std::string text_output = "";                      // Output if it’s a single string (e.g., version, help)
+    std::vector<std::string> lines_output = {};        // Output if multiple lines or items (e.g., list of names)
+    std::vector<FileInfo> files_output = {};           // Output if listing file info (e.g., from `ls`)
 };
 class Command  {
 public:

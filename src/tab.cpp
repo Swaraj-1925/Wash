@@ -77,7 +77,10 @@ int Tab::parse_and_execute_command(const std::string &line) {
 
     if(Tab::m_output.status_code != 200){
         return EXIT_FAILURE;
-    } else if (COMMAND_WITH_OUTPUT.contains(cmd)){
+    } else if (Tab::m_output.status_code == 500){
+
+    }
+    else if (COMMAND_WITH_OUTPUT.contains(cmd)){
         int update_line = it->second->render_output(m_p_Plane,m_output,m_Line);
         m_Line += update_line;
     }

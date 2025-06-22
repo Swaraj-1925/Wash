@@ -51,15 +51,18 @@ Output LsCommand::execute(const std::vector<std::string> &args) {
                 LsCommand::files.push_back(info);
         }
     }catch (const std::filesystem::filesystem_error& e) {
-        return Output{400,"ls , file system error"};
+        return Output{
+                FAILURE_INTERNAL_ERROR,
+                std::string("ls: filesystem error - ") + e.what()
+        };
     }
 
     if(LsCommand::sort_time || LsCommand::sort_size || LsCommand::reverse){
         LsCommand::sort_files();
     }
 
-    return Output{.status_code = 200,
-                  .file_info_output= LsCommand::files
+return Output{.status_code = SUCCESS,
+              .files_output= LsCommand::files
     };
 }
 void LsCommand::parse_args(const std::vector<std::string> &args) {
@@ -143,7 +146,7 @@ ThemeColor LsCommand::get_theme(std::string title) {
 }
 
 int LsCommand::render_output(ncpp::Plane *plane, Output output,int line) {
-    std::vector<FileInfo> result = output.file_info_output;
+    std::vector<FileInfo> result = output.files_output;
     int dim_x = 0;
     if(LsCommand::long_format){
         for (const auto &it: result){

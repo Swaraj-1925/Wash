@@ -5,8 +5,6 @@
 #ifndef WASH_CD_H
 #define WASH_CD_H
 #include "command.h"
-#include <string>
-#include <vector>
 
 class CdCommand : public Command{
 private:
