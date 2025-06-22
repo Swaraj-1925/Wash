@@ -27,7 +27,26 @@ int Shell::run_shell() {
         }else if(WS_BACKSPACE && !curTab.m_Command.empty()){
             curTab.handle_backspace_press(m_DimX);
             m_Nc.render();
-        } else if(WS_TOGGLE_STATUS_LINE){
+        }
+        else if(WS_HISTORY_UP ){
+            if (curTab.m_CommandHistory.empty()) continue;
+            if (curTab.m_CommandIdx > 0) {
+                curTab.m_CommandIdx--;
+            }
+            curTab.m_Command.clear();
+            curTab.m_Command = curTab.m_CommandHistory[curTab.m_CommandIdx];
+        }
+        else if(WS_HISTORY_DOWN ){
+            if (curTab.m_CommandHistory.empty()) continue;
+            if (curTab.m_CommandIdx < (int)curTab.m_CommandHistory.size() - 1) {
+                curTab.m_CommandIdx++;
+                curTab.m_Command = curTab.m_CommandHistory[curTab.m_CommandIdx];
+            } else {
+                curTab.m_Command.clear();  // clear if we go past latest command
+                curTab.m_CommandIdx = curTab.m_CommandHistory.size();
+            }
+        }
+        else if(WS_TOGGLE_STATUS_LINE){
             i_p_StatusLine.toggle_status();
 
         } else if( i_p_StatusLine.m_Status && WS_NEW_TAB){
@@ -37,7 +56,6 @@ int Shell::run_shell() {
             i_p_StatusLine.toggle_status();
             m_Nc.cursor_disable();
             i_p_StatusLine.status_line_command(&m_Nc);
-
         }
         else if( i_p_StatusLine.m_Status && WS_MOVE_LEFT_TAB){
 
@@ -75,6 +93,20 @@ int Shell::run_shell() {
             m_Tabs[m_TabIdx].m_p_Plane->move_top();
             i_p_StatusLine.toggle_status();
             m_Nc.render();
+        }
+        else if( i_p_StatusLine.m_Status && WS_DELETE_TAB){
+            if (m_Tabs.size() == 0) {
+                i_p_StatusLine.toggle_status();
+                continue;
+            }
+            else if (m_TabIdx > 0){
+                int oldIdx = m_TabIdx;
+                m_Tabs[m_TabIdx].m_Active = false;
+                m_Tabs.erase(m_Tabs.begin() + m_TabIdx);
+                m_TabIdx = oldIdx -1;
+                m_Tabs[m_TabIdx].m_Active = true;
+                i_p_StatusLine.toggle_status();
+            }
         }
         else{
             int cursor_x = curTab.handle_default(m_Key);

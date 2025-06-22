@@ -37,6 +37,7 @@ public:
 
     std::string m_Command;
     std::vector<std::string> m_CommandHistory;
+    int m_CommandIdx = 0;
     std::string m_CurrentPath;
 
     ncpp::Plane *m_p_OutputPlane = nullptr;

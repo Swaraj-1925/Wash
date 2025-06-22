@@ -69,7 +69,7 @@ int Tab::parse_and_execute_command(const std::string &line) {
     auto it = command_map.find(cmd);
 
     if ( it == command_map.end()) {
-        Tab::m_p_Plane->printf(20,NCALIGN_CENTER,"Didnt find command: %s",cmd.c_str());
+//        Tab::m_p_Plane->printf(20,NCALIGN_CENTER,"Didnt find command: %s",cmd.c_str());
         return EXIT_FAILURE;
     }
 
