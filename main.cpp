@@ -31,9 +31,9 @@ int main() {
     Theme theme;
 
     ncpp::Cell base(' ');
-    base.set_bg_rgb8(theme.TERM_CRUST_BG.get_r(),
-                     theme.TERM_CRUST_BG.get_g(),
-                     theme.TERM_CRUST_BG.get_b());
+    base.set_bg_rgb8(theme.TERM_CRUST_BG.r(),
+                     theme.TERM_CRUST_BG.g(),
+                     theme.TERM_CRUST_BG.b());
     p_std_plane->set_base_cell(base);
     p_std_plane->erase();
 

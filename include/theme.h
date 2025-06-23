@@ -9,9 +9,9 @@ struct ThemeColor {
     uint32_t hex;
     ThemeColor(uint32_t value) : hex(value) {}
 
-    uint8_t get_r() const { return (hex >> 16) & 0xFF; } // Extract red (1e)
-    uint8_t get_g() const { return (hex >> 8) & 0xFF; }  // Extract green (20)
-    uint8_t get_b() const { return hex & 0xFF; }         // Extract blue (30)
+    uint8_t r() const { return (hex >> 16) & 0xFF; } // Extract red (1e)
+    uint8_t g() const { return (hex >> 8) & 0xFF; }  // Extract green (20)
+    uint8_t b() const { return hex & 0xFF; }         // Extract blue (30)
 };
 
 

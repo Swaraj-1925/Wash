@@ -22,15 +22,13 @@
 
 struct FileInfo {
     std::string name ; // name of file
-    bool is_executable = false;
-    bool is_symlink = false;
-    bool is_dir= false;  // file or dir
     uint32_t num_hardlinks = 0; // number of directory inside director
     std::string size = "0"; // size of file
     std::time_t mtime; // last modified time
     std::string permissions = "----------";
     std::string owner = "";
     std::string group = "";
+    std::string type = "";
 
 };
 struct Output {

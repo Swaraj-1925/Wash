@@ -18,12 +18,12 @@ StatusLine::StatusLine(ncpp::Plane *std_plane,unsigned &dim_y,unsigned &dim_x)
     StatusLine::m_p_ModePlane = new ncpp::Plane(m_p_StdPlane, mode_opts);
 
     ncpp::Cell base(' ');
-    base.set_bg_rgb8(theme.TERM_MANTLE_BG.get_r(),
-                     theme.TERM_MANTLE_BG.get_g(),
-                     theme.TERM_MANTLE_BG.get_b());
-    base.set_fg_rgb8(theme.SUB_TEXT1.get_r(),
-                     theme.SUB_TEXT1.get_g(),
-                     theme.SUB_TEXT1.get_b());
+    base.set_bg_rgb8(theme.TERM_MANTLE_BG.r(),
+                     theme.TERM_MANTLE_BG.g(),
+                     theme.TERM_MANTLE_BG.b());
+    base.set_fg_rgb8(theme.SUB_TEXT1.r(),
+                     theme.SUB_TEXT1.g(),
+                     theme.SUB_TEXT1.b());
 
     m_p_StatusLinePlane->set_base_cell(base);
     m_p_ModePlane->set_base_cell(base);

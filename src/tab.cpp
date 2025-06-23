@@ -17,13 +17,13 @@ Tab::Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name
     Tab::m_p_Plane->erase();
     ncpp::Cell base(' ');
 
-    base.set_bg_rgb8(t.TERM_BASE_BG.get_r(),
-                     t.TERM_BASE_BG.get_g(),
-                     t.TERM_BASE_BG.get_b());
+    base.set_bg_rgb8(t.TERM_BASE_BG.r(),
+                     t.TERM_BASE_BG.g(),
+                     t.TERM_BASE_BG.b());
 
-    base.set_fg_rgb8(t.TEXT0.get_r(),
-                     t.TEXT0.get_g(),
-                     t.TEXT0.get_b());
+    base.set_fg_rgb8(t.TEXT0.r(),
+                     t.TEXT0.g(),
+                     t.TEXT0.b());
     Tab::m_p_Plane->set_base_cell(base);
     Tab::m_p_Plane->erase();
 
@@ -70,7 +70,7 @@ int Tab::parse_and_execute_command(const std::string &line) {
     auto it = command_map.find(cmd);
 
     if ( it == command_map.end()) {
-        Tab::m_p_Plane->printf(20,NCALIGN_CENTER,"Didnt find command: %s",cmd.c_str());
+//        Tab::m_p_Plane->printf(20,NCALIGN_CENTER,"Didnt find command: %s",cmd.c_str());
         return EXIT_FAILURE;
     }
 
@@ -89,13 +89,14 @@ int Tab::parse_and_execute_command(const std::string &line) {
         int update_line = it->second->render_output(m_p_Plane,m_output,m_Line);
         m_Line += update_line;
     }
+
+    m_p_Plane->set_fg_default();
     return EXIT_SUCCESS;
 }
 void Tab::handle_prompt() {
-    Tab::m_p_Plane->printf(Tab::m_Line,ncpp::NCAlign::Left, "%s", Tab::m_SHELL.c_str());
+    Tab::m_p_Plane->printf(Tab::m_Line,ncpp::NCAlign::Left, "%s\n", Tab::m_SHELL.c_str());
     Tab::m_p_Plane->printf(Tab::m_Line,Tab::m_ShellLen, "%s", Tab::m_Command.c_str());
 }
-
 std::string Tab::get_mode() {
     switch (m_Mode) {
         case 0:

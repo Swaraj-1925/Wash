@@ -8,15 +8,14 @@ void Tab::handle_enter_press() {
     Tab::m_CommandHistory.push_back(Tab::m_Command);
     if(m_Command == "clear"){
         Tab::m_p_Plane->erase();
-        Tab::m_Command.clear();
         Tab::m_Line = 0;
     } else{
         Tab::m_Line ++;
         if(Tab::parse_and_execute_command(m_Command) == EXIT_FAILURE) {
             Tab::m_p_Plane->printf(Tab::m_Line++,NCALIGN_CENTER,"Failed to executing command : %s",m_Command.c_str());
         }
-        Tab::m_Command.clear();
     }
+    Tab::m_Command.clear();
     Tab::update_current_path();
     Tab::m_CommandIdx += 1;
 }

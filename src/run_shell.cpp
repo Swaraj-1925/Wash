@@ -4,8 +4,6 @@
 #include "shell.h"
 
 int Shell::run_shell() {
-
-
     if (signal(SIGINT, Shell::handle_ctrl_c) == SIG_ERR) {
         std::cerr << "Failed to set SIGINT handler" << std::endl;
         return EXIT_FAILURE;
@@ -58,7 +56,6 @@ int Shell::run_shell() {
             i_p_StatusLine.status_line_command(&m_Nc);
         }
         else if( i_p_StatusLine.m_Status && WS_MOVE_LEFT_TAB){
-
             if (m_Tabs.size() <= 1) {
                 i_p_StatusLine.toggle_status();
                 continue;
