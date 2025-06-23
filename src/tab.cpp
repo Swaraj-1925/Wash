@@ -4,6 +4,7 @@
 
 #include "tab.h"
 
+
 Tab::Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name)
 :DimY(dim_y),DimX(dim_x)
 {
@@ -30,7 +31,7 @@ Tab::Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name
     Tab::m_Name = name;
 
     // meta data
-    struct passwd* pw = getpwuid(getuid());
+    passwd* pw = getpwuid(getuid());
     Tab::m_HomeDir = pw ? pw->pw_dir:"";
     Tab::m_Username = pw ? pw->pw_name:"unknown";
 

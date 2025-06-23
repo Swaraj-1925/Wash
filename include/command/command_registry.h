@@ -16,4 +16,6 @@
 #include "rmdir.h"
 #include "cp.h"
 #include "mv.h"
+#include "w_pwd.h"
+#include "whoami.h"
 #endif //WASH_COMMAND_REGISTRY_H

@@ -4,6 +4,7 @@
 
 #ifndef WASH_TAB_H
 #define WASH_TAB_H
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -11,7 +12,7 @@
 #include <unordered_map>
 #include <sstream>
 #include <unistd.h>
-#include <pwd.h>
+#include <w_pwd.h>
 
 #include "theme.h"
 #include "options.h"
@@ -58,7 +59,8 @@ private:
             "ls",
             "echo",
             "cat",
-            "mkdir"
+            "mkdir",
+            "pwd",
     };
 public:
     Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name);
