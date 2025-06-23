@@ -6,14 +6,13 @@
 
 bool RmdirCommand::remove_dir(const std::filesystem::path dir, Output &res) {
     std::error_code ec;
-    bool success = true;
 
-    if (std::filesystem::exists(dir)){
+    if (!std::filesystem::exists(dir)){
         res.status_code = FAILURE_VECTOR_OUTPUT;
         res.error_details.push_back("Cannot remove '" + dir.string() + "': No such file or directory\n");
         return false;
     }
-    if (std::filesystem::is_directory(dir,ec)){
+    if (!std::filesystem::is_directory(dir,ec)){
         res.status_code = FAILURE_VECTOR_OUTPUT;
         res.error_details.push_back("Cannot remove '" + dir.string() + "': Not a directory\n");
         return false;

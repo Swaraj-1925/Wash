@@ -16,7 +16,7 @@ bool CpCommand::copy(const std::filesystem::path &src, const std::filesystem::pa
         return false;
     }
     if (is_src_dir){
-        std::filesystem::copy_file(src,dst,std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive,ec);
+        std::filesystem::copy(src,dst,std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive,ec);
     } else{
         std::filesystem::copy_file(src,dst,std::filesystem::copy_options::overwrite_existing,ec);
     }
@@ -29,6 +29,7 @@ bool CpCommand::copy(const std::filesystem::path &src, const std::filesystem::pa
     if (verbose){
         res.text_output = "Copied '" + src.string() + "' to '" + dst.string() + "'\n";
     }
+    res.status_message = "src: " + src.string() + " dir: " + dst.string();
     return true;
 }
 void CpCommand::parse_args(const std::vector <std::string> &args) {
@@ -49,15 +50,12 @@ void CpCommand::parse_args(const std::vector <std::string> &args) {
     }
 }
 Output CpCommand::execute(const std::vector <std::string> &args) {
+    parse_args(args);
     Output res;
     std::filesystem::path target_path(target);
-    bool target_is_dir = std::filesystem::is_directory(target_path);
+    std::error_code ec;
+    bool target_is_dir = std::filesystem::exists(target_path) && std::filesystem::is_directory(target_path);
 
-    if (sources.size() < 2) {
-        res.status_code = FAILURE_INVALID_INPUT;
-        res.status_message = "Too few arguments";
-    }
-    parse_args(args);
     if (sources.size() > 1 && !target_is_dir) {
         res.status_code = FAILURE_INVALID_INPUT;
         res.status_message = "Cannot copy multiple sources to a non-directory target\n";

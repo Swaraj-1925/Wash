@@ -51,15 +51,11 @@ bool MvCommand::move(const std::filesystem::path &src, const std::filesystem::pa
 }
 
 Output MvCommand::execute(const std::vector <std::string> &args) {
+    parse_args(args);
     Output res;
     std::filesystem::path target_path(target);
     bool target_is_dir = std::filesystem::is_directory(target_path);
 
-    if (sources.size() < 2) {
-        res.status_code = FAILURE_INVALID_INPUT;
-        res.status_message = "Too few arguments";
-    }
-    parse_args(args);
     if (sources.size() > 1 && !target_is_dir) {
         res.status_code = FAILURE_INVALID_INPUT;
         res.status_message = "Cannot copy multiple sources to a non-directory target\n";

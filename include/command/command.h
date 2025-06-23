@@ -17,7 +17,7 @@
 #include <cerrno>
 #include <fcntl.h>
 #include <cstring>
-
+#include <unordered_set>
 #include "constants.h"
 
 struct FileInfo {

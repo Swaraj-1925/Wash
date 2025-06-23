@@ -69,16 +69,20 @@ int Tab::parse_and_execute_command(const std::string &line) {
     auto it = command_map.find(cmd);
 
     if ( it == command_map.end()) {
-//        Tab::m_p_Plane->printf(20,NCALIGN_CENTER,"Didnt find command: %s",cmd.c_str());
+        Tab::m_p_Plane->printf(20,NCALIGN_CENTER,"Didnt find command: %s",cmd.c_str());
         return EXIT_FAILURE;
     }
 
     Tab::m_output = it->second->execute(args);
 
-    if(Tab::m_output.status_code != 200){
-        return EXIT_FAILURE;
-    } else if (Tab::m_output.status_code == 500){
-
+    if (Tab::m_output.status_code == FAILURE_VECTOR_OUTPUT){
+        for (auto  it:m_output.error_details) {
+            Tab::m_p_Plane->printf(Tab::m_Line++,NCALIGN_CENTER," %s",it.c_str());
+        }
+    } else if (Tab::m_output.status_code == FAILURE_STRING_OUTPUT){
+        Tab::m_p_Plane->printf(Tab::m_Line++,NCALIGN_CENTER," %s",m_output.status_message.c_str());
+    } else if (Tab::m_output.status_code == FAILURE_INVALID_INPUT){
+        Tab::m_p_Plane->printf(Tab::m_Line++,NCALIGN_CENTER," %s",m_output.status_message.c_str());
     }
     else if (COMMAND_WITH_OUTPUT.contains(cmd)){
         int update_line = it->second->render_output(m_p_Plane,m_output,m_Line);
