@@ -8,16 +8,19 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <ncpp/NotCurses.hh>
 #include <unordered_map>
 #include <sstream>
 #include <unistd.h>
-#include <w_pwd.h>
+#include <sys/wait.h>
+#include <ncpp/NotCurses.hh>
+#include <fstream>
+#include <iterator>
 
 #include "theme.h"
 #include "options.h"
 #include "command/command.h"
 #include "constants.h"
+#include "w_pwd.h"
 // Terminal Modes
 enum T_Mode {
     M_INSERT,
@@ -62,10 +65,12 @@ private:
             "mkdir",
             "pwd",
     };
+
+    std::vector<std::string > errors;
 public:
     Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name);
     Tab() = default;
-    ~Tab() = default;
+    ~Tab();
 
     void update_current_path();
     void handle_enter_press();
