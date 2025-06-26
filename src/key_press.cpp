@@ -11,8 +11,10 @@ void Tab::handle_enter_press() {
         Tab::m_Line = 0;
     } else{
         Tab::m_Line ++;
-        if(Tab::parse_and_execute_command(m_Command) == EXIT_FAILURE) {
-            Tab::m_p_Plane->printf(Tab::m_Line++,NCALIGN_CENTER,"Failed to executing command : %s",m_Command.c_str());
+        if(!m_Command.empty() && m_Command != "\n" ){
+            if(Tab::parse_and_execute_command(m_Command) == EXIT_FAILURE) {
+                Tab::m_p_Plane->printf(Tab::m_Line++,NCALIGN_CENTER,"Failed to executing command : `%s` ",m_Command.c_str());
+            }
         }
     }
     Tab::m_Command.clear();

@@ -94,8 +94,7 @@ int Tab::parse_and_execute_command(const std::string &line) {
     return EXIT_SUCCESS;
 }
 void Tab::handle_prompt() {
-    Tab::m_p_Plane->printf(Tab::m_Line,ncpp::NCAlign::Left, "%s\n", Tab::m_SHELL.c_str());
-    Tab::m_p_Plane->printf(Tab::m_Line,Tab::m_ShellLen, "%s", Tab::m_Command.c_str());
+    Tab::m_p_Plane->printf(Tab::m_Line,0, "%s %s \n",Tab::m_SHELL.c_str(),Tab::m_Command.c_str());
 }
 std::string Tab::get_mode() {
     switch (m_Mode) {
