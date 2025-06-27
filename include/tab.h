@@ -20,7 +20,6 @@
 #include "options.h"
 #include "command/command.h"
 #include "constants.h"
-#include "w_pwd.h"
 // Terminal Modes
 enum T_Mode {
     M_INSERT,
@@ -51,6 +50,7 @@ private:
     ncpp::Plane *m_p_StdPlane = nullptr;
     Output m_output;
 
+
     std::string m_HomeDir;
     std::string m_Username;
     std::string m_HostName;
@@ -59,13 +59,13 @@ private:
     std::unordered_map<std::string, std::shared_ptr<Command>> command_map;
     unsigned DimY,DimX;
 
-    std::unordered_set<std::string> COMMAND_WITH_OUTPUT = {
-            "ls",
-            "echo",
-            "cat",
-            "mkdir",
-            "pwd",
-    };
+//    std::unordered_set<std::string> COMMAND_WITH_OUTPUT = {
+//            "ls",
+//            "echo",
+//            "cat",
+//            "mkdir",
+//            "pwd",
+//    };
 
     std::vector<std::string > errors;
     std::vector<std::string > debug;
@@ -104,7 +104,9 @@ public:
     std::string get_mode();
 
 private:
-    int parse_and_execute_command(const std::string& line);
+    std::vector<char*> parse_command(const std::string& line);
+    int execute_command(std::vector<char*>& exec_args);
+    void free_args(std::vector<char*>& args);
     void register_builtin_commands();
 };
 #endif //WASH_TAB_H

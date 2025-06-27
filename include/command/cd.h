@@ -13,9 +13,9 @@ private:
     bool invalid = false;
     std::string path;
 private:
-    void parse_args(const std::vector<std::string>& args);
+    void parse_args(const std::vector<char *>& args);
 public:
-    Output execute(const std::vector<std::string>& args) override;
+    Output execute(const std::vector<char *>& args) override;
     int render_output(ncpp::Plane* plane,Output output,int line) override {return 0;}
 };
 

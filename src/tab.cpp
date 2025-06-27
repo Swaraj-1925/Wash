@@ -59,6 +59,7 @@ void Tab::update_current_path() {
 }
 
 Tab::~Tab(){
+
     std::ofstream output_file("error.txt");
     std::ofstream debug_file("debug.txt");
 
@@ -116,6 +117,13 @@ void Tab::handle_prompt() {
     m_p_Plane->cursor_move(m_Line, cursor_x);
 //    Tab::m_p_Plane->printf(Tab::m_Line,0, "%s %s \n",Tab::m_SHELL.c_str(),Tab::m_Command.c_str());
 }
+void Tab::free_args(std::vector<char*>& args) {
+    for (auto* ptr : args) {
+        delete[] ptr;
+    }
+    args.clear();
+}
+
 std::string Tab::get_mode() {
     switch (m_Mode) {
         case 0:
