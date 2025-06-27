@@ -24,6 +24,9 @@ int Shell::run_shell() {
             continue;
         }else if(WS_BACKSPACE && !curTab.m_Command.empty()){
             curTab.handle_backspace_press(m_DimX);
+            if (curTab.m_SHELL.size() >= curTab.m_CommandIdx) {
+                curTab.m_p_Plane->cursor_move(curTab.m_Line, --curTab.m_CursorIdx);
+            }
             m_Nc.render();
 
         }else if(WS_ARROW_LEFT && !curTab.m_Command.empty()){

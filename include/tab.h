@@ -55,7 +55,6 @@ private:
     std::string m_Username;
     std::string m_HostName;
 
-
     Theme t;
     std::unordered_map<std::string, std::shared_ptr<Command>> command_map;
     unsigned DimY,DimX;
