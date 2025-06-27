@@ -29,7 +29,7 @@ static struct ncplane_options default_tab_option(unsigned DimY, unsigned DimX) {
     ncplane_options nc_opts{};
     nc_opts.y = 0;
     nc_opts.x = 0;
-    nc_opts.rows = DimX-2;
+//    nc_opts.rows = 10000;
     nc_opts.cols = DimY;
     nc_opts.name = "tab_plain";
     nc_opts.flags = MAIN_PLAIN_FLAGS;

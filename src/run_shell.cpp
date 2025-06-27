@@ -15,7 +15,6 @@ int Shell::run_shell() {
         if (ctrl_c_press_count >= 3) break;
         m_Key = m_Nc.get(false, &m_NcIn);
 
-        curTab.handle_prompt();
 
         if(WS_QUIT){
             m_Quite = true;
@@ -58,6 +57,12 @@ int Shell::run_shell() {
                 curTab.m_Command.clear();  // clear if we go past latest command
                 curTab.m_CommandIdx = curTab.m_CommandHistory.size();
             }
+        } else if (WS_CTRL_A){
+            curTab.m_CursorIdx = 0;
+            curTab.m_p_Plane->cursor_move(curTab.m_Line,0);
+        } else if (WS_CTRL_E) {
+            curTab.m_CursorIdx = (int)curTab.m_Command.size();
+            curTab.m_p_Plane->cursor_move(curTab.m_Line,curTab.m_CursorIdx);
         }
         else if(WS_TOGGLE_STATUS_LINE){
             i_p_StatusLine.toggle_status();
@@ -121,6 +126,7 @@ int Shell::run_shell() {
             }
         }
         else{
+            curTab.handle_prompt();
             int cursor_x = curTab.handle_default(m_Key);
             m_Nc.cursor_enable(curTab.m_Line, cursor_x);
         }

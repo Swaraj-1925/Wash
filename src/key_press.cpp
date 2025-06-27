@@ -31,6 +31,10 @@ void Tab::handle_enter_press() {
                 m_p_Plane->printf(++Tab::m_Line, NCALIGN_CENTER, "%s", output.status_message.c_str());
             }
         }
+    } else if(strcmp(args[0] ,"history") == 0){
+        for(const auto &it: Tab::m_CommandHistory){
+            m_p_Plane->putstr(++Tab::m_Line, NCALIGN_CENTER, it.c_str());
+        }
     }else{
         if (!m_Command.empty() && m_Command != "\n") {
             if (Tab::execute_command(args) == EXIT_FAILURE) {

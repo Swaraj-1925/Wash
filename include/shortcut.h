@@ -27,4 +27,7 @@
 
 #define WS_ARROW_LEFT (m_Key == NCKEY_LEFT)
 #define WS_ARROW_RIGHT (m_Key == NCKEY_RIGHT)
+
+#define WS_CTRL_A (m_Key == 'A' && ncinput_ctrl_p(&m_NcIn))
+#define WS_CTRL_E (m_Key == 'E' && ncinput_ctrl_p(&m_NcIn))
 #endif //wash_shortcut_h

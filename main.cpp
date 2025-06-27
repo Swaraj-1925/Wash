@@ -28,6 +28,7 @@ int main() {
 
 
     ncpp::Plane* p_std_plane = nc.get_stdplane();
+    p_std_plane->set_scrolling(true);
     Theme theme;
 
     ncpp::Cell base(' ');
@@ -35,7 +36,7 @@ int main() {
                      theme.TERM_CRUST_BG.g(),
                      theme.TERM_CRUST_BG.b());
     p_std_plane->set_base_cell(base);
-    p_std_plane->erase();
+//    p_std_plane->erase();
 
     if (!p_std_plane) {
         nc.stop();

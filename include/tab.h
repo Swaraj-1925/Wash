@@ -46,6 +46,8 @@ public:
 
     ncpp::Plane *m_p_OutputPlane = nullptr;
     ncpp::Plane* m_p_Plane = nullptr;
+    std::vector<std::string > errors;
+    std::vector<std::string > debug;
 private:
     ncpp::Plane *m_p_StdPlane = nullptr;
     Output m_output;
@@ -67,8 +69,6 @@ private:
 //            "pwd",
 //    };
 
-    std::vector<std::string > errors;
-    std::vector<std::string > debug;
     std::string escape_string(const std::string& input) {
         std::string result;
         for (char c : input) {
