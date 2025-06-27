@@ -37,11 +37,12 @@ public:
 
     int m_Line = 0;
     int m_ShellLen = 0;
+    int m_CursorIdx = 0;
+    int m_CommandIdx = 0;
     std::string m_SHELL;
 
     std::string m_Command;
     std::vector<std::string> m_CommandHistory;
-    int m_CommandIdx = 0;
     std::string m_CurrentPath;
 
     ncpp::Plane *m_p_OutputPlane = nullptr;
@@ -53,6 +54,7 @@ private:
     std::string m_HomeDir;
     std::string m_Username;
     std::string m_HostName;
+
 
     Theme t;
     std::unordered_map<std::string, std::shared_ptr<Command>> command_map;

@@ -107,7 +107,14 @@ Tab::~Tab(){
 //    return EXIT_SUCCESS;
 //}
 void Tab::handle_prompt() {
-    Tab::m_p_Plane->printf(Tab::m_Line,0, "%s %s \n",Tab::m_SHELL.c_str(),Tab::m_Command.c_str());
+    m_p_Plane->cursor_move(m_Line, 0);
+
+    std::string prompt = m_SHELL + " " + m_Command;
+    m_p_Plane->putstr(prompt.c_str());
+
+    int cursor_x = (int)m_ShellLen + m_CursorIdx;
+    m_p_Plane->cursor_move(m_Line, cursor_x);
+//    Tab::m_p_Plane->printf(Tab::m_Line,0, "%s %s \n",Tab::m_SHELL.c_str(),Tab::m_Command.c_str());
 }
 std::string Tab::get_mode() {
     switch (m_Mode) {

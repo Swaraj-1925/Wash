@@ -25,4 +25,6 @@
 #define WS_HISTORY_UP (m_Key == NCKEY_UP)
 #define WS_HISTORY_DOWN (m_Key == NCKEY_DOWN)
 
+#define WS_ARROW_LEFT (m_Key == NCKEY_LEFT)
+#define WS_ARROW_RIGHT (m_Key == NCKEY_RIGHT)
 #endif //wash_shortcut_h

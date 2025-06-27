@@ -18,24 +18,25 @@ void Tab::handle_enter_press() {
         }
     }
     Tab::m_Command.clear();
+    Tab::m_CursorIdx = 0;
     Tab::update_current_path();
     Tab::m_CommandIdx += 1;
 }
-
 int Tab::handle_default(uint32_t m_Key) {
-    int cursor_x = (int) Tab::m_ShellLen + Tab::m_Command.length();
-    Tab::m_p_Plane->cursor_move(Tab::m_Line, cursor_x);
-
     if (m_Key >= 32 && m_Key <= 126) {
-        Tab::m_Command += static_cast<char>(m_Key);
+        m_Command.insert(m_Command.begin() + m_CursorIdx, static_cast<char>(m_Key));
+        m_CursorIdx++;
     } else if (m_Key >= 0x80 && m_Key <= 0x10FFFF) {
         unsigned char utf8_buf[5] = {0};
         if (ncpp::NotCurses::ucs32_to_utf8(&m_Key, 1, utf8_buf, sizeof(utf8_buf))) {
-            Tab::m_Command.append(reinterpret_cast<char *>(utf8_buf));
+            m_Command.insert(m_CursorIdx, reinterpret_cast<char *>(utf8_buf));
+            m_CursorIdx++;
         }
     }
-    return cursor_x;
+
+    return (int)m_ShellLen + m_CursorIdx; // new cursor position
 }
+
 void  Tab::handle_backspace_press(int dim_x) {
     if (m_Command.empty()) return;
     Tab::m_Command.pop_back();

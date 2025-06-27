@@ -25,8 +25,20 @@ int Shell::run_shell() {
         }else if(WS_BACKSPACE && !curTab.m_Command.empty()){
             curTab.handle_backspace_press(m_DimX);
             m_Nc.render();
+
+        }else if(WS_ARROW_LEFT && !curTab.m_Command.empty()){
+            if (curTab.m_CursorIdx> 0) {
+                curTab.m_CursorIdx--;
+            }
+            curTab.m_p_Plane->cursor_move(curTab.m_Line,curTab.m_CursorIdx);
+        }else if(WS_ARROW_RIGHT && !curTab.m_Command.empty()){
+            if (curTab.m_CursorIdx < (int)curTab.m_Command.size()) {
+                curTab.m_CursorIdx++;
+            }
+            curTab.m_p_Plane->cursor_move(curTab.m_Line,curTab.m_CursorIdx);
+
         }
-        else if(WS_HISTORY_UP ){
+        else if(WS_HISTORY_UP){
             if (curTab.m_CommandHistory.empty()) continue;
             if (curTab.m_CommandIdx > 0) {
                 curTab.m_CommandIdx--;
@@ -34,7 +46,7 @@ int Shell::run_shell() {
             curTab.m_Command.clear();
             curTab.m_Command = curTab.m_CommandHistory[curTab.m_CommandIdx];
         }
-        else if(WS_HISTORY_DOWN ){
+        else if(WS_HISTORY_DOWN){
             if (curTab.m_CommandHistory.empty()) continue;
             if (curTab.m_CommandIdx < (int)curTab.m_CommandHistory.size() - 1) {
                 curTab.m_CommandIdx++;
