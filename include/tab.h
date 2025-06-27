@@ -67,6 +67,28 @@ private:
     };
 
     std::vector<std::string > errors;
+    std::vector<std::string > debug;
+    std::string escape_string(const std::string& input) {
+        std::string result;
+        for (char c : input) {
+            switch (c) {
+                case '\n':
+                    result += "\\n";
+                    break;
+                case '\t':
+                    result += "\\t";
+                    break;
+                case '\r':
+                    result += "\\r";
+                    break;
+                default:
+                    result += c;
+                    break;
+            }
+        }
+        return result;
+    }
+
 public:
     Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name);
     Tab() = default;

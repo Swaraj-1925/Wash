@@ -60,6 +60,8 @@ void Tab::update_current_path() {
 
 Tab::~Tab(){
     std::ofstream output_file("error.txt");
+    std::ofstream debug_file("debug.txt");
+
     std::ostream_iterator<std::string> output_iterator(output_file, "\n");
     if(errors.empty()){
         errors.emplace_back("==Congratulation!! NO ERRORS ==");
@@ -67,6 +69,8 @@ Tab::~Tab(){
     } else{
         std::copy(Tab::errors.begin(), Tab::errors.end(),output_iterator);
     }
+    std::ostream_iterator<std::string> debug_iterator(debug_file, "");
+    std::copy(debug.begin(), debug.end(), debug_iterator);
 }
 //int Tab::parse_and_execute_command(const std::string &line) {
 //    std::istringstream iss(line);

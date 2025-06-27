@@ -50,7 +50,7 @@ int Tab::parse_and_execute_command(const std::string &line) {
             close(filedes[1]); // disable write end
             if (execvp(exec_args[0],exec_args.data()) < 0){
                 Tab::errors.push_back(std::string("Error in execvp: ") + strerror(errno) + "\n");
-                return EXIT_FAILURE;
+                exit(EXIT_FAILURE);
             }
             break;
         default: //parent process
@@ -60,6 +60,8 @@ int Tab::parse_and_execute_command(const std::string &line) {
                 buff[count] = '\0';
                 char *line_start = buff;
                 char *new_line;
+                std::string debug_line = escape_string(std::string(line_start)) + " " + strerror(errno) + "\\n";
+                Tab::debug.push_back(debug_line);
                 while((new_line = strchr(line_start,'\n')) != nullptr){
                     *new_line = '\0';
                     //print data
