@@ -79,7 +79,7 @@ void Tab::handle_prompt() {
     m_ShellLen = m_SHELL.size();
     m_p_Plane->cursor_move(m_Line, 0);
 
-    std::string prompt = m_SHELL + " " + m_Command + "\n";
+    std::string prompt = m_SHELL + " " + m_Command;
     m_p_Plane->putstr(prompt.c_str());
 
     int cursor_x = (int)m_ShellLen + m_CursorIdx + 1;
