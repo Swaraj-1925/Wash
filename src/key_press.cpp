@@ -51,7 +51,7 @@ void Tab::handle_enter_press() {
     }else{
         if (!m_Command.empty() && m_Command != "\n") {
             if (Tab::handle_command(args) == EXIT_FAILURE) {
-                Tab::m_p_Plane->printf(Tab::m_Line, NCALIGN_CENTER, "Failed to executing command : `%s` ",
+                Tab::m_p_Plane->printf(++Tab::m_Line, NCALIGN_CENTER, "Failed to executing command : `%s` ",
                                        m_Command.c_str());
             }
         }
@@ -67,13 +67,17 @@ void Tab::handle_enter_press() {
 
 int Tab::handle_default(uint32_t m_Key) {
     if (m_Key >= 32 && m_Key <= 126) {
-        m_Command.insert(m_Command.begin() + m_CursorIdx, static_cast<char>(m_Key));
+//        m_Command.insert(m_Command.begin() + m_CursorIdx, static_cast<char>(m_Key));
+
+        m_Command.insert(m_CursorIdx, 1, static_cast<char>(m_Key));
         m_CursorIdx++;
     } else if (m_Key >= 0x80 && m_Key <= 0x10FFFF) {
         unsigned char utf8_buf[5] = {0};
         if (ncpp::NotCurses::ucs32_to_utf8(&m_Key, 1, utf8_buf, sizeof(utf8_buf))) {
+//            m_Command.insert(m_CursorIdx, reinterpret_cast<char *>(utf8_buf));
+//            m_CursorIdx++;
             m_Command.insert(m_CursorIdx, reinterpret_cast<char *>(utf8_buf));
-            m_CursorIdx++;
+            m_CursorIdx += strlen(reinterpret_cast<char *>(utf8_buf));
         }
     }
 
@@ -82,8 +86,8 @@ int Tab::handle_default(uint32_t m_Key) {
 
 void Tab::handle_backspace_press(int dim_x) {
     if (m_Command.empty()) return;
-    Tab::m_Command.pop_back();
+//    Tab::m_Command.pop_back();
+    m_Command.erase(m_CursorIdx - 1, 1);
     // start from row, start col,num of row to erase,erase col location
     ncplane_erase_region(*m_p_Plane, m_Line, m_ShellLen, 1, dim_x - m_ShellLen); // causes flickering
-
 }

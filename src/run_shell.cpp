@@ -20,21 +20,21 @@ int Shell::run_shell() {
             curTab.handle_enter_press();
             continue;
         }else if(WS_BACKSPACE && !curTab.m_Command.empty()){
-            curTab.handle_backspace_press(m_DimX);
-            if (curTab.m_SHELL.size() > curTab.m_CommandIdx) {
-                curTab.m_p_Plane->cursor_move(curTab.m_Line, curTab.m_CursorIdx--);
+            if (curTab.m_CursorIdx > 0) {
+                curTab.handle_backspace_press(m_DimX);
+                curTab.m_CursorIdx--;
+                curTab.m_p_Plane->cursor_move(curTab.m_Line, curTab.m_ShellLen + curTab.m_CursorIdx);
             }
         }else if(WS_ARROW_LEFT && !curTab.m_Command.empty()){
-            if (curTab.m_CursorIdx> 0) {
+            if (curTab.m_CursorIdx > 0) {
                 curTab.m_CursorIdx--;
+                curTab.m_p_Plane->cursor_move(curTab.m_Line, curTab.m_ShellLen + curTab.m_CursorIdx);
             }
-            curTab.m_p_Plane->cursor_move(curTab.m_Line,curTab.m_CursorIdx);
         }else if(WS_ARROW_RIGHT && !curTab.m_Command.empty()){
             if (curTab.m_CursorIdx < (int)curTab.m_Command.size()) {
                 curTab.m_CursorIdx++;
+                curTab.m_p_Plane->cursor_move(curTab.m_Line, curTab.m_ShellLen + curTab.m_CursorIdx);
             }
-            curTab.m_p_Plane->cursor_move(curTab.m_Line,curTab.m_CursorIdx);
-
         }
         else if(WS_HISTORY_UP){
             if (curTab.m_CommandHistory.empty()) continue;
@@ -85,7 +85,6 @@ int Shell::run_shell() {
             m_Tabs[m_TabIdx].m_Active = true;
             m_Tabs[m_TabIdx].m_p_Plane->move_top();
             i_p_StatusLine.toggle_status();
-            m_Nc.render();
         }
         else if( i_p_StatusLine.m_Status && WS_MOVE_RIGHT_TAB){
             if (m_Tabs.size() <= 1) {
@@ -103,7 +102,6 @@ int Shell::run_shell() {
             m_Tabs[m_TabIdx].m_Active = true;
             m_Tabs[m_TabIdx].m_p_Plane->move_top();
             i_p_StatusLine.toggle_status();
-            m_Nc.render();
         }
         else if( i_p_StatusLine.m_Status && WS_DELETE_TAB){
             if (m_Tabs.size() == 0) {
@@ -116,6 +114,7 @@ int Shell::run_shell() {
                 m_Tabs.erase(m_Tabs.begin() + m_TabIdx);
                 m_TabIdx = oldIdx -1;
                 m_Tabs[m_TabIdx].m_Active = true;
+                m_Tabs[m_TabIdx].m_p_Plane->move_top();
                 i_p_StatusLine.toggle_status();
             }
         }
