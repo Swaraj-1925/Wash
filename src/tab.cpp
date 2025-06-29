@@ -13,7 +13,11 @@ Tab::Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name
 //     initialize plane
     struct ncplane_options TabOpts = default_tab_option(DimY, DimX);
     Tab::m_p_Plane = new ncpp::Plane( *Tab::m_p_StdPlane, &TabOpts);
-    Tab::m_p_Plane->set_scrolling(true);
+
+
+//    m_p_NotificationPlane->move_bottom();
+    auto res = ncplane_set_scrolling(*m_p_Plane, true);
+//    Tab::debug.push_back(std::string("set scrolling output: ") + (res == 0 ? "success" : "failure"));
     Tab::m_p_Plane->erase();
     ncpp::Cell base(' ');
 
@@ -58,44 +62,37 @@ void Tab::update_current_path() {
     Tab::m_ShellLen = (int)Tab::m_SHELL.length() + 1;
 }
 
-
-int Tab::parse_and_execute_command(const std::string &line) {
-    std::istringstream iss(line);
-    std::string cmd;
-    iss >> cmd;
-
-    std::vector<std::string> args;
-    std::string arg;
-    while (iss >> arg) args.push_back(arg);
-    auto it = command_map.find(cmd);
-
-    if ( it == command_map.end()) {
-//        Tab::m_p_Plane->printf(20,NCALIGN_CENTER,"Didnt find command: %s",cmd.c_str());
-        return EXIT_FAILURE;
+Tab::~Tab(){
+    std::ofstream output_file("error.txt");
+    std::ofstream debug_file("debug.txt");
+    std::ostream_iterator<std::string> output_iterator(output_file, "\n");
+    if(errors.empty()){
+        errors.emplace_back("==Congratulation!! NO ERRORS ==");
+        std::copy(Tab::errors.begin(), Tab::errors.end(),output_iterator);
+    } else{
+        std::copy(Tab::errors.begin(), Tab::errors.end(),output_iterator);
     }
-
-    Tab::m_output = it->second->execute(args);
-
-    if (Tab::m_output.status_code == FAILURE_VECTOR_OUTPUT){
-        for (auto  it:m_output.error_details) {
-            Tab::m_p_Plane->printf(Tab::m_Line++,NCALIGN_CENTER," %s",it.c_str());
-        }
-    } else if (Tab::m_output.status_code == FAILURE_STRING_OUTPUT){
-        Tab::m_p_Plane->printf(Tab::m_Line++,NCALIGN_CENTER," %s",m_output.status_message.c_str());
-    } else if (Tab::m_output.status_code == FAILURE_INVALID_INPUT){
-        Tab::m_p_Plane->printf(Tab::m_Line++,NCALIGN_CENTER," %s",m_output.status_message.c_str());
-    }
-    else if (COMMAND_WITH_OUTPUT.contains(cmd)){
-        int update_line = it->second->render_output(m_p_Plane,m_output,m_Line);
-        m_Line += update_line;
-    }
-
-    m_p_Plane->set_fg_default();
-    return EXIT_SUCCESS;
+    std::ostream_iterator<std::string> debug_iterator(debug_file, "");
+    std::copy(debug.begin(), debug.end(), debug_iterator);
 }
 void Tab::handle_prompt() {
-    Tab::m_p_Plane->printf(Tab::m_Line,0, "%s %s \n",Tab::m_SHELL.c_str(),Tab::m_Command.c_str());
+    m_ShellLen = m_SHELL.size();
+    m_p_Plane->cursor_move(m_Line, 0);
+
+    std::string prompt = m_SHELL + " " + m_Command;
+    m_p_Plane->putstr(prompt.c_str());
+
+    int cursor_x = (int)m_ShellLen + m_CursorIdx + 1;
+    m_p_Plane->cursor_move(m_Line, cursor_x);
+//    Tab::m_p_Plane->printf(Tab::m_Line,0, "%s %s \n",Tab::m_SHELL.c_str(),Tab::m_Command.c_str());
 }
+void Tab::free_args(std::vector<char*>& args) {
+    for (auto* ptr : args) {
+        delete[] ptr;
+    }
+    args.clear();
+}
+
 std::string Tab::get_mode() {
     switch (m_Mode) {
         case 0:

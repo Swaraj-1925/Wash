@@ -18,7 +18,9 @@
 #include <fcntl.h>
 #include <cstring>
 #include <unordered_set>
+
 #include "constants.h"
+#include "theme.h"
 
 struct FileInfo {
     std::string name ; // name of file
@@ -44,8 +46,9 @@ struct Output {
 class Command  {
 public:
     virtual ~Command() = default;
-    virtual Output execute(const std::vector<std::string>& args) = 0;
-    virtual int render_output(ncpp::Plane* plane,Output output,int line) = 0;
+    virtual Output execute(const std::vector<char *>& args) = 0;
+    virtual int render_output(ncpp::Plane* plane,int line) = 0;
+    virtual void parse_output(const std::vector<char *>& output,std::vector<char *> &exec_args) = 0;
 };
 
 

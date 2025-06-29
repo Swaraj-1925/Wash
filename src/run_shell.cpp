@@ -14,19 +14,29 @@ int Shell::run_shell() {
         Tab &curTab = m_Tabs[m_TabIdx];
         if (ctrl_c_press_count >= 3) break;
         m_Key = m_Nc.get(false, &m_NcIn);
-
-        curTab.handle_prompt();
-
-        if(WS_QUIT){
+        if(WS_QUIT) {
             m_Quite = true;
-        } else if(WS_ENTER){
+        }else if(WS_ENTER){
             curTab.handle_enter_press();
             continue;
         }else if(WS_BACKSPACE && !curTab.m_Command.empty()){
             curTab.handle_backspace_press(m_DimX);
-            m_Nc.render();
+            if (curTab.m_SHELL.size() > curTab.m_CommandIdx) {
+                curTab.m_p_Plane->cursor_move(curTab.m_Line, curTab.m_CursorIdx--);
+            }
+        }else if(WS_ARROW_LEFT && !curTab.m_Command.empty()){
+            if (curTab.m_CursorIdx> 0) {
+                curTab.m_CursorIdx--;
+            }
+            curTab.m_p_Plane->cursor_move(curTab.m_Line,curTab.m_CursorIdx);
+        }else if(WS_ARROW_RIGHT && !curTab.m_Command.empty()){
+            if (curTab.m_CursorIdx < (int)curTab.m_Command.size()) {
+                curTab.m_CursorIdx++;
+            }
+            curTab.m_p_Plane->cursor_move(curTab.m_Line,curTab.m_CursorIdx);
+
         }
-        else if(WS_HISTORY_UP ){
+        else if(WS_HISTORY_UP){
             if (curTab.m_CommandHistory.empty()) continue;
             if (curTab.m_CommandIdx > 0) {
                 curTab.m_CommandIdx--;
@@ -34,7 +44,7 @@ int Shell::run_shell() {
             curTab.m_Command.clear();
             curTab.m_Command = curTab.m_CommandHistory[curTab.m_CommandIdx];
         }
-        else if(WS_HISTORY_DOWN ){
+        else if(WS_HISTORY_DOWN){
             if (curTab.m_CommandHistory.empty()) continue;
             if (curTab.m_CommandIdx < (int)curTab.m_CommandHistory.size() - 1) {
                 curTab.m_CommandIdx++;
@@ -43,10 +53,15 @@ int Shell::run_shell() {
                 curTab.m_Command.clear();  // clear if we go past latest command
                 curTab.m_CommandIdx = curTab.m_CommandHistory.size();
             }
+        } else if (WS_CTRL_A){
+            curTab.m_CursorIdx = 0;
+            curTab.m_p_Plane->cursor_move(curTab.m_Line,0);
+        } else if (WS_CTRL_E) {
+            curTab.m_CursorIdx = (int)curTab.m_Command.size();
+            curTab.m_p_Plane->cursor_move(curTab.m_Line,curTab.m_CursorIdx);
         }
         else if(WS_TOGGLE_STATUS_LINE){
             i_p_StatusLine.toggle_status();
-
         } else if( i_p_StatusLine.m_Status && WS_NEW_TAB){
             i_p_StatusLine.toggle_status();
             create_tab();
@@ -54,8 +69,7 @@ int Shell::run_shell() {
             i_p_StatusLine.toggle_status();
             m_Nc.cursor_disable();
             i_p_StatusLine.status_line_command(&m_Nc);
-        }
-        else if( i_p_StatusLine.m_Status && WS_MOVE_LEFT_TAB){
+        }else if( i_p_StatusLine.m_Status && WS_MOVE_LEFT_TAB){
             if (m_Tabs.size() <= 1) {
                 i_p_StatusLine.toggle_status();
                 continue;
@@ -106,6 +120,7 @@ int Shell::run_shell() {
             }
         }
         else{
+            curTab.handle_prompt();
             int cursor_x = curTab.handle_default(m_Key);
             m_Nc.cursor_enable(curTab.m_Line, cursor_x);
         }

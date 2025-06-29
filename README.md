@@ -10,7 +10,7 @@
 4. [ ] Search for History
 5. [ ] Syntax Highlighting
 6. [ ] Autosuggestions
-7. [ ] Background customization 
+7. [ ] Background customization  *lack of resources
 8. [ ] Font
 9. [x] Modern UI 
 

@@ -4,7 +4,7 @@
 
 #include "cd.h"
 
-Output CdCommand::execute(const std::vector<std::string>& args) {
+Output CdCommand::execute(const std::vector<char *>& args) {
         parse_args(args);
         if(invalid){
             return Output {
@@ -31,17 +31,19 @@ Output CdCommand::execute(const std::vector<std::string>& args) {
         }
         return {};
     }
-    void CdCommand::parse_args(const std::vector<std::string>& args) {
-        for (const auto& arg : args) {
-            if (arg == "-P") {
+    void CdCommand::parse_args(const std::vector<char *>& args) {
+        for (size_t i = 1; i < args.size() && args[i]; ++i) {
+            const char* arg = args[i];
+
+            if (strcmp(arg, "-P") == 0) {
                 use_physical = true;
-            } else if (arg == "-L") {
+            } else if (strcmp(arg, "-L") == 0) {
                 use_physical = false;
-            } else if (arg == "-e") {
+            } else if (strcmp(arg, "-e") == 0) {
                 check_exists = true;
-            } else if (!arg.empty() && arg[0] != '-') {
+            } else if (arg[0] != '-') {
                 path = arg;
-            } else{
+            } else {
                 invalid = true;
             }
         }
