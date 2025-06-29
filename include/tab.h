@@ -15,6 +15,8 @@
 #include <ncpp/NotCurses.hh>
 #include <fstream>
 #include <iterator>
+#include <pty.h>
+#include <utmp.h>
 
 #include "theme.h"
 #include "options.h"
@@ -30,8 +32,9 @@ enum T_Mode {
 class Tab {
 public:
     std::string  m_Name;
+    ncpp::Plane *m_p_NotificationPlane;
 
-    enum T_Mode m_Mode = M_VISUAL;
+    T_Mode m_Mode {M_INSERT};
     bool m_Active = true;
 
     int m_Line = 0;
@@ -44,10 +47,10 @@ public:
     std::vector<std::string> m_CommandHistory;
     std::string m_CurrentPath;
 
-    ncpp::Plane *m_p_OutputPlane = nullptr;
     ncpp::Plane* m_p_Plane = nullptr;
     std::vector<std::string > errors;
     std::vector<std::string > debug;
+
 private:
     ncpp::Plane *m_p_StdPlane = nullptr;
     Output m_output;
@@ -59,32 +62,16 @@ private:
 
     Theme t;
     std::unordered_map<std::string, std::shared_ptr<Command>> command_map;
+
     unsigned DimY,DimX;
-
-//    std::unordered_set<std::string> COMMAND_WITH_OUTPUT = {
-//            "ls",
-//            "echo",
-//            "cat",
-//            "mkdir",
-//            "pwd",
-//    };
-
     std::string escape_string(const std::string& input) {
         std::string result;
         for (char c : input) {
             switch (c) {
-                case '\n':
-                    result += "\\n";
-                    break;
-                case '\t':
-                    result += "\\t";
-                    break;
-                case '\r':
-                    result += "\\r";
-                    break;
-                default:
-                    result += c;
-                    break;
+                case '\n': result += "\\n"; break;
+                case '\t': result += "\\t"; break;
+                case '\r': result += "\\r"; break;
+                default: result += c; break;
             }
         }
         return result;
@@ -102,11 +89,14 @@ public:
 
     void handle_prompt();
     std::string get_mode();
+    // Check and update background process statuses
 
 private:
     std::vector<char*> parse_command(const std::string& line);
-    int execute_command(std::vector<char*>& exec_args);
+    int handle_command(std::vector<char*>& exec_args);
+    int execute_command(pid_t fpid ,int *filedes,std::vector<char *> &exec_args);
     void free_args(std::vector<char*>& args);
     void register_builtin_commands();
+    void get_output();
 };
 #endif //WASH_TAB_H

@@ -12,11 +12,11 @@ private:
     bool check_exists = false;
     bool invalid = false;
     std::string path;
-private:
     void parse_args(const std::vector<char *>& args);
 public:
     Output execute(const std::vector<char *>& args) override;
-    int render_output(ncpp::Plane* plane,Output output,int line) override {return 0;}
+    int render_output(ncpp::Plane* plane,int line) override {return 0;}
+    void parse_output(const std::vector<char *>& args,std::vector<char *> &exec_args) override {};
 };
 
 #endif //WASH_CD_H

@@ -5,11 +5,20 @@
 #include "tab.h"
 
 void Tab::handle_enter_press() {
-    Tab::m_CommandHistory.push_back(Tab::m_Command);
-    std::vector<char*> args = Tab::parse_command(m_Command);
-    for (const auto* arg : args) {
-        debug.push_back(std::string("debug args cd : ") + (arg ? arg : "nullptr") + "\n");
+    if(m_Command.empty()){
+        Tab::m_Line +=1;
+        Tab::m_Command.clear();
+//        Tab::free_args(args);
+        Tab::m_CursorIdx = 0;
+        Tab::update_current_path();
+        Tab::m_CommandIdx += 1;
+        return;
     }
+    std::vector<char*> args = Tab::parse_command(m_Command);
+    Tab::m_CommandHistory.push_back(Tab::m_Command);
+//    for (const auto* arg : args) {
+//        debug.push_back(std::string("debug args cd : ") + (arg ? arg : "nullptr") + "\n");
+//    }
     if(strcmp(args[0] ,"clear") == 0){
         Tab::m_p_Plane->erase();
         Tab::m_Line = 0;
@@ -31,13 +40,14 @@ void Tab::handle_enter_press() {
                 m_p_Plane->printf(++Tab::m_Line, NCALIGN_CENTER, "%s", output.status_message.c_str());
             }
         }
+        Tab::update_current_path();
     } else if(strcmp(args[0] ,"history") == 0){
         for(const auto &it: Tab::m_CommandHistory){
             m_p_Plane->putstr(++Tab::m_Line, NCALIGN_CENTER, it.c_str());
         }
     }else{
         if (!m_Command.empty() && m_Command != "\n") {
-            if (Tab::execute_command(args) == EXIT_FAILURE) {
+            if (Tab::handle_command(args) == EXIT_FAILURE) {
                 Tab::m_p_Plane->printf(++Tab::m_Line, NCALIGN_CENTER, "Failed to executing command : `%s` ",
                                        m_Command.c_str());
             }

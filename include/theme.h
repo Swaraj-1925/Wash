@@ -29,24 +29,19 @@ struct Theme {
     ThemeColor SUB_TEXT1 = ThemeColor(0xbac2de);
     ThemeColor SUB_TEXT0 = ThemeColor(0xa6adc8);
 
-    //permission
-    ThemeColor PEACH = ThemeColor(0xfab387);
-    //hyperlinks
-    ThemeColor TEAL = ThemeColor(0x94e2d5);
-    //user
-    ThemeColor YELLOW = ThemeColor(0xf9e2af);
-    //group
-    ThemeColor GREEN = ThemeColor(0xa6e3a1);
-    //time
-    ThemeColor MAROON = ThemeColor(0xeba0ac);
-    // normal file text 0
+    // ls
+    ThemeColor PERMISSION = ThemeColor(0xb4befe); // Lavender
+    ThemeColor LINK = ThemeColor(0xa6e3a1); //Green
+    ThemeColor USER = ThemeColor(0xcdd6f4); //text
+    ThemeColor GROUP = ThemeColor(0xcdd6f4); //text
+    ThemeColor TIME = ThemeColor(0xf9e2af); // Yellow
+    ThemeColor SIZE = ThemeColor(0xfab387); // peach
 
-    //excutable
-    ThemeColor SAPPHIRE = ThemeColor(0x74c7ec);
-    //syslink
-    ThemeColor BLUE = ThemeColor(0x89b4fa);
-
-    // dot files sub text 0
+    ThemeColor NORM_FILE = ThemeColor(0xcdd6f4); //text
+    ThemeColor SYM_LINK = ThemeColor(0x74c7ec); //Sapphire
+    ThemeColor EXECUTABLE = ThemeColor(0x89b4fa); //Blue
+    ThemeColor DOT_FILE = ThemeColor(0xa6adc8); //subtext 0
+    ThemeColor DIR = ThemeColor(0xfab387); //Peach
 
 };
 

@@ -2,33 +2,6 @@
 // Created by swaraj on 6/27/25.
 //
 #include "tab.h"
-
-// parse arguments to be used or execvp
-//std::vector<char *> Tab::parse_command(const std::string &line) {
-//    std::istringstream iss(line);
-//    std::string cmd;
-//    iss >> cmd;
-//    std::vector<std::string> args;
-//    std::string arg;
-//    while (iss >> arg) args.push_back(arg);
-//
-//    std::vector<char *> exec_args;
-//
-//    if (!cmd.empty()) {
-//        char *cmd_copy = new char[cmd.size() + 1]; // +1 for null terminator
-//        strcpy(cmd_copy, cmd.c_str());
-//        exec_args.push_back(cmd_copy);
-//    } else {
-//        exec_args.push_back(nullptr); // Handle empty command
-//    }
-//    for (const auto &a: args) {
-//        char *arg_copy = new char[a.size() + 1];
-//        strcpy(arg_copy, a.c_str());
-//        exec_args.push_back(arg_copy);
-//    }
-//    exec_args.push_back(nullptr);
-//    return exec_args;
-//}
 std::vector<char*> Tab::parse_command(const std::string& line) {
     std::istringstream iss(line);
     std::string token;
@@ -46,8 +19,7 @@ std::vector<char*> Tab::parse_command(const std::string& line) {
 }
 // create a process using fork then use exec for replacing the current process image (memory, code, and data) with a new process image
 // using pipe redirect std i/o to temporary buffer
-int Tab::execute_command(std::vector<char *> &exec_args) {
-
+int Tab::handle_command(std::vector<char *> &exec_args) {
 // create file descriptor for read and write end of pipe
 // A pipe is a temporary buffer managed by the kernel that connects the output of one process to the input of another. It’s a simple way to pass data between related processes
 // data is read in order they are writen FIFO
@@ -59,9 +31,6 @@ int Tab::execute_command(std::vector<char *> &exec_args) {
     }
 
     pid_t fpid = fork();
-    int status;
-    char buff[1024];
-    int output_line = Tab::m_Line + 1;
     switch (fpid) {
         case -1: // error
             close(filedes[0]);
@@ -84,36 +53,51 @@ int Tab::execute_command(std::vector<char *> &exec_args) {
             }
             break;
         default: //parent process
-            close(filedes[1]); // disable read end
-            ssize_t count;
-            while ((count = read(filedes[0], buff, sizeof(buff) - 1)) > 0) {
-                buff[count] = '\0';
-                char *line_start = buff;
-                char *new_line;
-                std::string debug_line = escape_string(std::string(line_start)) + " " + strerror(errno) + "\\n";
-                Tab::debug.push_back(debug_line);
-                while ((new_line = strchr(line_start, '\n')) != nullptr) {
-                    *new_line = '\0';
-                    //print data
-                    m_p_Plane->printf(output_line++, NCALIGN_LEFT, "%s", line_start);
-                    line_start = new_line + 1;
-                }
-                if (*line_start) {
-                    m_p_Plane->printf(output_line++, NCALIGN_LEFT, "%s", line_start);
-                }
-            }
-            close(filedes[0]);
-            pid_t wpid = waitpid(fpid, &status, 0);
-            while (!WIFEXITED(status) && !WIFSIGNALED(status)) {
-                wpid = waitpid(fpid, &status, 0);    // Keep waiting if not exited or signaled
-            }
-            if (WEXITSTATUS(status) != 0) {
-                Tab::errors.push_back(std::string("Command failed: ") + exec_args[0] + "\n");
-                return EXIT_FAILURE;
-            }
-            Tab::m_Line = output_line;
+            Tab::execute_command(fpid,filedes,exec_args);
             break;
     }
 
+    return EXIT_SUCCESS;
+}
+
+int Tab::execute_command(pid_t fpid, int *filedes,std::vector<char *> &exec_args) {
+    int status;
+    char buff[1024];
+    close(filedes[1]); // disable read end
+    ssize_t count;
+    std::vector<char *> output;
+
+    while ((count = read(filedes[0], buff, sizeof(buff) - 1)) > 0) {
+        buff[count] = '\0';
+        char *line_start = buff;
+        char *new_line;
+        std::string debug_line = escape_string(std::string(line_start)) + " " + strerror(errno) + "\\n";
+        Tab::debug.push_back(debug_line);
+
+        while ((new_line = strchr(line_start, '\n')) != nullptr) {
+            *new_line = '\0';
+            output.push_back(strdup(line_start));  // make a copy
+            line_start = new_line + 1;
+        }
+        if (*line_start) {
+            output.push_back(strdup(line_start));
+        }
+    }
+
+    auto it = Tab::command_map.find(exec_args[0]);
+    if(it != Tab::command_map.end()){
+        it->second->parse_output(output,exec_args);
+    }
+
+    Tab::m_Line =  it->second->render_output(Tab::m_p_Plane,Tab::m_Line+1);
+    close(filedes[0]);
+    pid_t wpid = waitpid(fpid, &status, 0);
+    while (!WIFEXITED(status) && !WIFSIGNALED(status)) {
+        wpid = waitpid(fpid, &status, 0);    // Keep waiting if not exited or signaled
+    }
+    if (WEXITSTATUS(status) != 0) {
+        Tab::errors.push_back(std::string("Command failed: ") +exec_args[0]+ "\n");
+        return EXIT_FAILURE;
+    }
     return EXIT_SUCCESS;
 }

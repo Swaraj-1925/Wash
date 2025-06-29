@@ -13,6 +13,9 @@ Tab::Tab(ncpp::Plane* std_plane,unsigned dim_y, unsigned dim_x, std::string name
 //     initialize plane
     struct ncplane_options TabOpts = default_tab_option(DimY, DimX);
     Tab::m_p_Plane = new ncpp::Plane( *Tab::m_p_StdPlane, &TabOpts);
+
+
+//    m_p_NotificationPlane->move_bottom();
     auto res = ncplane_set_scrolling(*m_p_Plane, true);
 //    Tab::debug.push_back(std::string("set scrolling output: ") + (res == 0 ? "success" : "failure"));
     Tab::m_p_Plane->erase();
@@ -79,7 +82,7 @@ void Tab::handle_prompt() {
     std::string prompt = m_SHELL + " " + m_Command + "\n";
     m_p_Plane->putstr(prompt.c_str());
 
-    int cursor_x = (int)m_ShellLen + m_CursorIdx;
+    int cursor_x = (int)m_ShellLen + m_CursorIdx + 1;
     m_p_Plane->cursor_move(m_Line, cursor_x);
 //    Tab::m_p_Plane->printf(Tab::m_Line,0, "%s %s \n",Tab::m_SHELL.c_str(),Tab::m_Command.c_str());
 }

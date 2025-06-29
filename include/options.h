@@ -75,6 +75,20 @@ static struct ncplane_options default_output_plane_option(int y,unsigned DimY, u
     nc_opts.name = "output";
     return nc_opts;
 }
+static struct ncplane_options default_notification_plane_option(unsigned width) {
+    ncplane_options nc_opts {
+            .y = 0,
+            .x = NCALIGN_RIGHT,
+            .rows = 3,
+            .cols = width,
+            .userptr = nullptr,
+            .name = "bgnotify",
+            .flags = NCPLANE_OPTION_HORALIGNED | NCPLANE_OPTION_FIXED,
+            .margin_b = 0,
+            .margin_r = 0,
+    };
+    return nc_opts;
+}
 static struct ncplane_options default_statusLine_tab_option() {
     ncplane_options nc_opts{};
 

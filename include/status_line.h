@@ -48,7 +48,6 @@ public:
     int status_line_command(ncpp::NotCurses* nc);
     void toggle_status();
 
-
 };
 
 
