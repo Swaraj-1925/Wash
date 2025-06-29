@@ -125,3 +125,31 @@ std::string ANSIParser::getCleanText(const std::string& input) {
 
     return result;
 }
+
+int ANSIParser::print_formated_output(ncpp::Plane *plane, std::vector<std::string> &debug, std::vector<char *> output,int line) {
+    for (const auto it: output) {
+        std::string debug_line = std::string("Processing: ") + it + "\n";
+        debug.push_back(debug_line);
+        auto segments = ANSIParser::parseANSI(it);
+        std::string seg_count = std::string("Found ") + std::to_string(segments.size()) + " segments\n";
+        int current_x = 0;
+        for (const auto &segment: segments) {
+            std::string debug_seg = std::string("Segment: '") + segment.text + "' Color: " + segment.ansi_code + " HasColor: " + (segment.has_color ? "yes" : "no") + "\n";
+            debug.push_back(debug_seg);
+
+            if (segment.has_color && !segment.ansi_code.empty()) {
+                ANSIParser::rgb color = ANSIParser::ansiToRGB(segment.ansi_code);
+                plane->set_fg_rgb8(color.r, color.g, color.b);
+            } else {
+                plane->set_fg_rgb8(205, 214, 244);
+            }
+
+            plane->cursor_move(line, current_x);
+            plane->printf("%s", segment.text.c_str());  // Fixed this line
+            current_x += segment.text.length();
+        }
+        line++;
+
+    }
+    return line-1;
+}

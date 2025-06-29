@@ -30,6 +30,7 @@ public:
     rgb ansiToRGB(const std::string& ansi_code);
     std::vector<ColoredSegment> parseANSI(const std::string& input);
     std::string getCleanText(const std::string& input);
+    int print_formated_output(ncpp::Plane *plane , std::vector<std::string> &debug, std::vector<char* > output,int line);
 
 };
 #endif //WASH_ANSIPARSER_H

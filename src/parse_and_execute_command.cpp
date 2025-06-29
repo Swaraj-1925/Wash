@@ -111,56 +111,9 @@ int Tab::execute_command(pid_t fpid, int *filedes,std::vector<char *> &exec_args
         Tab::m_Line =  it->second->render_output(Tab::m_p_Plane,Tab::m_Line+1);
     } else{
         ANSIParser parser;
-        int line = Tab::m_Line + 1;
-        int start_x = 2;
-
-        for (auto it : output) {
-            std::string debug_line = std::string("Processing: ") + it + "\n";
-            Tab::debug.push_back(debug_line);
-            // Add character debugging
-            std::string char_debug = "First 40 chars: ";
-            std::string input_str = std::string(it);
-            for (size_t i = 0; i < std::min(input_str.length(), size_t(40)); ++i) {
-                char c = input_str[i];
-                if (c == 27) char_debug += "[ESC]";
-                else if (c == '^') char_debug += "[CARET]";
-                else if (c == '[') char_debug += "[BRACKET]";
-                else if (c >= 32 && c <= 126) char_debug += c;
-                else char_debug += "[" + std::to_string((int)c) + "]";
-            }
-            char_debug += "\n";
-            Tab::debug.push_back(char_debug);
-            // Parse the line
-            auto segments = parser.parseANSI(it);
-
-            // Debug: show how many segments we got
-            std::string seg_count = std::string("Found ") + std::to_string(segments.size()) + " segments\n";
-            Tab::debug.push_back(seg_count);
-
-            // Print each segment on the same line
-            int current_x = start_x;
-            for (const auto &segment: segments) {
-                std::string debug_seg = std::string("Segment: '") + segment.text +
-                                        "' Color: " + segment.ansi_code +
-                                        " HasColor: " + (segment.has_color ? "yes" : "no") + "\n";
-                Tab::debug.push_back(debug_seg);
-
-                if (segment.has_color && !segment.ansi_code.empty()) {
-                    ANSIParser::rgb color = parser.ansiToRGB(segment.ansi_code);
-                    Tab::m_p_Plane->set_fg_rgb8(color.r, color.g, color.b);
-                } else {
-                    Tab::m_p_Plane->set_fg_rgb8(205, 214, 244);
-                }
-
-                Tab::m_p_Plane->cursor_move(line, current_x);
-                Tab::m_p_Plane->printf("%s", segment.text.c_str());  // Fixed this line
-                current_x += segment.text.length();
-            }
-            line++;
-        }
-
-        Tab::m_Line = line - 1;
+        Tab::m_Line = parser.print_formated_output(Tab::m_p_Plane,debug,output,Tab::m_Line+1);
     }
+    Tab::m_p_Plane->set_fg_default();
 
     close(filedes[0]);
     pid_t wpid = waitpid(fpid, &status, 0);

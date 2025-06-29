@@ -5,7 +5,7 @@
 ## Features
 ----
 1. [x] Built Using Notcurses
-2. [ ] Parallel Command Execution
+2. [x] Parallel Command Execution
 3. [x] Integrated Git
 4. [ ] Search for History
 5. [ ] Tab to complete 
