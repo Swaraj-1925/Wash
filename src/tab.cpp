@@ -76,15 +76,18 @@ Tab::~Tab(){
     std::copy(debug.begin(), debug.end(), debug_iterator);
 }
 void Tab::handle_prompt() {
-    m_ShellLen = m_SHELL.size();
     m_p_Plane->cursor_move(m_Line, 0);
 
-    std::string prompt = m_SHELL + " " + m_Command;
-    m_p_Plane->putstr(prompt.c_str());
+    m_p_Plane->printf(Tab::m_Line,0,"%s",m_SHELL.c_str());
+    m_ShellLen = m_SHELL.size() + 1;
+    m_p_Plane->printf(Tab::m_Line,Tab::m_ShellLen,"%s",m_Command.c_str());
 
-    int cursor_x = (int)m_ShellLen + m_CursorIdx + 1;
+    if (m_CursorIdx < 0) m_CursorIdx = 0;
+    if (m_CursorIdx > (int)m_Command.size()) m_CursorIdx = m_Command.size();
+
+    // Move cursor (strictly after shell)
+    int cursor_x = m_ShellLen + m_CursorIdx;
     m_p_Plane->cursor_move(m_Line, cursor_x);
-//    Tab::m_p_Plane->printf(Tab::m_Line,0, "%s %s \n",Tab::m_SHELL.c_str(),Tab::m_Command.c_str());
 }
 void Tab::free_args(std::vector<char*>& args) {
     for (auto* ptr : args) {
