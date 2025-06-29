@@ -16,9 +16,9 @@ void Tab::handle_enter_press() {
     }
     std::vector<char*> args = Tab::parse_command(m_Command);
     Tab::m_CommandHistory.push_back(Tab::m_Command);
-//    for (const auto* arg : args) {
-//        debug.push_back(std::string("debug args cd : ") + (arg ? arg : "nullptr") + "\n");
-//    }
+    for (const auto* arg : args) {
+        debug.push_back(std::string("debug args cd : ") + (arg ? arg : "nullptr") + "\n");
+    }
     if(strcmp(args[0] ,"clear") == 0){
         Tab::m_p_Plane->erase();
         Tab::m_Line = 0;
@@ -30,6 +30,7 @@ void Tab::handle_enter_press() {
 //        m_p_Plane->putstr(m_Line+,0,"Exit! code:" + exit_code);
 //        exit(exit_code);
 
+        Tab::m_Line +=1;
     } else if(strcmp(args[0] ,"cd") == 0){
         auto  it = Tab::command_map.find("cd");
         if (it == command_map.end()) {
@@ -40,21 +41,23 @@ void Tab::handle_enter_press() {
                 m_p_Plane->printf(++Tab::m_Line, NCALIGN_CENTER, "%s", output.status_message.c_str());
             }
         }
+        Tab::m_Line +=1;
         Tab::update_current_path();
     } else if(strcmp(args[0] ,"history") == 0){
         for(const auto &it: Tab::m_CommandHistory){
             m_p_Plane->putstr(++Tab::m_Line, NCALIGN_CENTER, it.c_str());
         }
+        Tab::m_Line +=1;
     }else{
         if (!m_Command.empty() && m_Command != "\n") {
             if (Tab::handle_command(args) == EXIT_FAILURE) {
-                Tab::m_p_Plane->printf(++Tab::m_Line, NCALIGN_CENTER, "Failed to executing command : `%s` ",
+                Tab::m_p_Plane->printf(Tab::m_Line, NCALIGN_CENTER, "Failed to executing command : `%s` ",
                                        m_Command.c_str());
             }
         }
+        Tab::m_Line +=1;
     }
 
-    Tab::m_Line +=1;
     Tab::m_Command.clear();
     Tab::free_args(args);
     Tab::m_CursorIdx = 0;
