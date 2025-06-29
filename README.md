@@ -6,13 +6,11 @@
 ----
 1. [x] Built Using Notcurses
 2. [ ] Parallel Command Execution
-3. [ ] Integrated Git
+3. [x] Integrated Git
 4. [ ] Search for History
-5. [ ] Syntax Highlighting
-6. [ ] Autosuggestions
-7. [ ] Background customization  *lack of resources
-8. [ ] Font
-9. [x] Modern UI 
+5. [ ] Tab to complete 
+6. [ ] Background customization  *[lack of resources]
+7. [x] Modern UI 
 
 ## References
 - **Notcurses** : 
