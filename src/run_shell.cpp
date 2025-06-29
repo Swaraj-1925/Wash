@@ -42,7 +42,11 @@ int Shell::run_shell() {
                 curTab.m_CommandIdx--;
             }
             curTab.m_Command.clear();
+            ncplane_erase_region(*curTab.m_p_Plane, curTab.m_Line, curTab.m_ShellLen, 1, curTab.m_Command.size()); // causes flickering
             curTab.m_Command = curTab.m_CommandHistory[curTab.m_CommandIdx];
+            curTab.m_CursorIdx = (int)curTab.m_Command.length();
+            curTab.m_p_Plane->cursor_move(curTab.m_Line, curTab.m_ShellLen + curTab.m_CursorIdx);
+//            curTab.m_p_Plane->cursor_move(curTab.m_Line, curTab.m_ShellLen + curTab.m_Command.length());
         }
         else if(WS_HISTORY_DOWN){
             if (curTab.m_CommandHistory.empty()) continue;
@@ -51,8 +55,12 @@ int Shell::run_shell() {
                 curTab.m_Command = curTab.m_CommandHistory[curTab.m_CommandIdx];
             } else {
                 curTab.m_Command.clear();  // clear if we go past latest command
+                ncplane_erase_region(*curTab.m_p_Plane, curTab.m_Line, curTab.m_ShellLen, 1, curTab.m_Command.size()); // causes flickering
                 curTab.m_CommandIdx = curTab.m_CommandHistory.size();
             }
+
+            curTab.m_CursorIdx = (int)curTab.m_Command.length();
+            curTab.m_p_Plane->cursor_move(curTab.m_Line, curTab.m_ShellLen + curTab.m_CursorIdx);
         } else if (WS_CTRL_A){
             curTab.m_CursorIdx = 0;
             curTab.m_p_Plane->cursor_move(curTab.m_Line,0);

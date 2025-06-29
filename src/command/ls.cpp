@@ -27,32 +27,32 @@ int LsCommand::render_output(ncpp::Plane *plane, int line) {
         for (const auto &it: files) {
             ThemeColor color = get_theme("permission");
             plane->set_fg_rgb8(color.r(), color.g(), color.b());
-            plane->printf(line, 0, "%s", it.permissions.c_str());
+            plane->printf(line, 2, "%s", it.permissions.c_str());
 
             color = get_theme("hyperlink");
             plane->set_fg_rgb8(color.r(), color.g(), color.b());
-            plane->printf(line, 12, "%d", it.num_hardlinks);
+            plane->printf(line, 16, "%d", it.num_hardlinks);
 
             color = get_theme("user");
             plane->set_fg_rgb8(color.r(), color.g(), color.b());
-            plane->printf(line, 14, "%s", it.owner.c_str());
+            plane->printf(line, 20, "%s", it.owner.c_str());
 
             color = get_theme("group");
             plane->set_fg_rgb8(color.r(), color.g(), color.b());
-            plane->printf(line, 22, "%s", it.group.c_str());
+            plane->printf(line, 28, "%s", it.group.c_str());
 
             color = get_theme("size");
             plane->set_fg_rgb8(color.r(), color.g(), color.b());
-            plane->printf(line, 31, "%s", it.size.c_str());
+            plane->printf(line, 36, "%s", it.size.c_str());
 
             color = get_theme("time");
             plane->set_fg_rgb8(color.r(), color.g(), color.b());
-            plane->printf(line, 40, "%s %s %s", it.month.c_str(), it.day.c_str(), it.time_or_year.c_str());
+            plane->printf(line, 43, "%s %s %s", it.month.c_str(), it.day.c_str(), it.time_or_year.c_str());
 
 
             color = get_theme(it.type);
             plane->set_fg_rgb8(color.r(), color.g(), color.b());
-            plane->printf(line, 55, "%s", it.name.c_str());
+            plane->printf(line, 59, "%s", it.name.c_str());
 
             line++;
         }

@@ -47,13 +47,9 @@ std::vector<ColoredSegment> ANSIParser::parseANSI(const std::string& input) {
         size_t ansi_start = std::string::npos;
 
         // Try different ANSI sequence patterns
-        // Pattern 1: ^[[
-        size_t pattern1 = input.find("^[[", pos);
-        // Pattern 2: ESC[ (actual escape character)
-        size_t pattern2 = input.find("\x1b[", pos);
-        // Pattern 3: \033[
-        size_t pattern3 = input.find("\033[", pos);
-
+        size_t pattern1 = input.find("^[[", pos); // Pattern 1: ^[[
+        size_t pattern2 = input.find("\x1b[", pos); // Pattern 2: ESC[ (actual escape character)
+        size_t pattern3 = input.find("\033[", pos); // Pattern 3: \033[
         // Find the earliest match
         ansi_start = std::min({pattern1, pattern2, pattern3});
 

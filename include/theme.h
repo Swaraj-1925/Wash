@@ -22,7 +22,7 @@ struct Theme {
     // Crust layers
     ThemeColor TERM_CRUST_BG= ThemeColor(0x181926);
     ThemeColor TERM_MANTLE_BG = ThemeColor(0x1e2030);
-    ThemeColor TERM_BASE_BG = ThemeColor(0x303446);
+    ThemeColor TERM_BASE_BG = ThemeColor(0x292c3c);
 
     ThemeColor SURFACE_BG1 = ThemeColor(0x51576d);
     ThemeColor TEXT0 = ThemeColor(0xcad3f5);
