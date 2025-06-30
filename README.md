@@ -4,9 +4,9 @@
 ----
 
 ## Overview
-WASH is a modern, feature-rich terminal shell designed to deepen your understanding of shell and terminal operations. Built using the Notcurses library for a vibrant text user interface (TUI), WASH combines a sleek, contemporary design inspired by the Catppuccin theme with powerful command execution capabilities. The goal of WASH is to provide an intuitive and visually appealing shell experience while allowing users to explore how commands are processed in a terminal environment.
+WASH is a modern, feature-rich terminal shell designed to deepen my understanding of shell and terminal operations. Built using the Notcurses library for a vibrant text user interface (TUI), WASH combines a sleek, contemporary design inspired by the Catppuccin theme with powerful command execution capabilities. The goal of WASH is to provide an intuitive and visually appealing shell experience while allowing me to explore how commands are processed in a terminal environment.
 
-WASH leverages `fork` and `execvp` to execute commands, supporting most standard shell commands. Currently, it handles command output effectively but has limited support for input due to constraints in connecting the stdin descriptor via pipes. Future updates aim to address this limitation.
+WASH leverages `fork` and `execvp` to execute commands, supporting most standard shell commands. Currently, it handles command output effectively but has limited support for input due to constraints in connecting the stdin descriptor via pipes. and it doesnt scroll Future updates aim to address this limitation.
 
 ## Features
 - **Notcurses-Powered TUI**: Utilizes the Notcurses library for a modern, visually engaging terminal interface.
