@@ -35,7 +35,9 @@
 #define WS_ARROW_RIGHT (m_Key == NCKEY_RIGHT)
 
 #define WS_CTRL_A (m_Key == 'A' && ncinput_ctrl_p(&m_NcIn))
+#define WS_CTRL_B (m_Key == 'B' && ncinput_ctrl_p(&m_NcIn))
 #define WS_CTRL_E (m_Key == 'E' && ncinput_ctrl_p(&m_NcIn))
+#define WS_CTRL_F (m_Key == 'F' && ncinput_ctrl_p(&m_NcIn))
 
 //#define WS_SEND_BACKGROUND (m_Key == WS_KEY_SEND_BACKGROUND && ncinput_ctrl_p(&m_NcIn))
 #endif //wash_shortcut_h
