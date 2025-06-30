@@ -19,6 +19,11 @@ WASH leverages `fork` and `execvp` to execute commands, supporting most standard
 - **Planned Features**:
   - Command history search (in progress).
   - Background customization (currently limited by resource constraints).
+## demo
+
+
+https://github.com/user-attachments/assets/6bfcf40d-99de-4bd1-8c49-88a0f820debe
+
 
 ## Shortcuts
 The following shortcuts are currently implemented in WASH:
