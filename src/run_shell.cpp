@@ -8,18 +8,26 @@ int Shell::run_shell() {
         std::cerr << "Failed to set SIGINT handler" << std::endl;
         return EXIT_FAILURE;
     }
-
     m_Nc.render();
     while (!m_Quite){
         Tab &curTab = m_Tabs[m_TabIdx];
         if (ctrl_c_press_count >= 3) break;
         m_Key = m_Nc.get(false, &m_NcIn);
+
+//        if (!debug.empty()){
+//            for(auto it:debug)
+//            curTab.m_p_Plane->printf(25,100,"%s",it.c_str());
+//        }
+//
         if(WS_QUIT) {
             m_Quite = true;
         }else if(WS_ENTER){
             curTab.handle_enter_press();
             continue;
-        }else if(WS_BACKSPACE && !curTab.m_Command.empty()){
+        } else if(WS_TAB){
+            curTab.handle_tab();
+        }
+        else if(WS_BACKSPACE && !curTab.m_Command.empty()){
             if (curTab.m_CursorIdx > 0) {
                 curTab.handle_backspace_press(m_DimX);
                 curTab.m_CursorIdx--;

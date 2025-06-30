@@ -27,9 +27,6 @@ void Tab::handle_enter_press() {
         if(args[1] != nullptr){
             exit_code = strtol(args[1], nullptr,10);
         }
-//        m_p_Plane->putstr(m_Line+,0,"Exit! code:" + exit_code);
-//        exit(exit_code);
-
         Tab::m_Line +=1;
     } else if(strcmp(args[0] ,"cd") == 0){
         auto  it = Tab::command_map.find("cd");
@@ -48,6 +45,25 @@ void Tab::handle_enter_press() {
             m_p_Plane->putstr(++Tab::m_Line, NCALIGN_CENTER, it.c_str());
         }
         Tab::m_Line +=1;
+    }else if(strcmp(args[0] ,"cat") == 0){
+        auto it = Tab::command_map.find("cat");
+        if (it == command_map.end()) {
+            m_p_Plane->printf(++Tab::m_Line, NCALIGN_CENTER, "cat command not found in command_map");
+        } else {
+            auto output = it->second->execute(args);
+            if (output.status_code == SUCCESS || !output.lines_output.empty()) {
+                for (const auto& line : output.lines_output) {
+                    m_p_Plane->putstr(++Tab::m_Line, 0, line.c_str());
+                }
+            }
+            if (!output.status_message.empty()) {
+                m_p_Plane->printf(++Tab::m_Line, 0, "%s", output.status_message.c_str());
+            }
+
+            for (const auto& error : output.error_details) {
+                m_p_Plane->printf(++Tab::m_Line, 0, "%s", error.c_str());
+            }
+        }
     }else{
         if (!m_Command.empty() && m_Command != "\n") {
             if (Tab::handle_command(args) == EXIT_FAILURE) {
@@ -63,6 +79,7 @@ void Tab::handle_enter_press() {
     Tab::m_CursorIdx = 0;
     Tab::update_current_path();
     Tab::m_CommandIdx += 1;
+    ncplane_erase_region(*m_p_Plane, m_Line, 0, INT_MAX, INT_MAX); // causes flickering
 }
 
 int Tab::handle_default(uint32_t m_Key) {
@@ -90,4 +107,60 @@ void Tab::handle_backspace_press(int dim_x) {
     m_Command.erase(m_CursorIdx - 1, 1);
     // start from row, start col,num of row to erase,erase col location
     ncplane_erase_region(*m_p_Plane, m_Line, m_ShellLen, 1, dim_x - m_ShellLen); // causes flickering
+}
+void Tab::handle_tab() {
+    TabCompletion tb_completion(debug);
+    auto out = tb_completion.handleTabCompletion(m_Command);
+    if (!out.empty()) {
+        // Tokenize the current command
+        std::vector<std::string> tokens;
+        std::stringstream ss(m_Command);
+        std::string token;
+        while (ss >> token) {
+            tokens.push_back(token);
+        }
+        if (!tokens.empty()) {
+            if (out.size() == 1) {
+                // Replace the last token with the completion
+                tokens.back() = out[0];
+                // Rebuild the command
+                std::string newCommand;
+                for (size_t i = 0; i < tokens.size(); ++i) {
+                    if (i > 0) newCommand += " ";
+                    newCommand += tokens[i];
+                }
+                // Add a space for further input
+                newCommand += " ";
+                m_Command = newCommand;
+               m_CursorIdx = (int)newCommand.size();
+                m_p_Plane->cursor_move(m_Line, m_CursorIdx);
+            } else if (out.size() < 20) {
+                for (const auto& it : out) {
+                    size_t max_length = 0;
+                    for (const auto& it : out) {
+                        max_length = std::max(max_length, it.size());
+                    }
+                    int column_width = max_length + 2;
+                    unsigned dimx = m_p_Plane->get_dim_x();
+                    int num_columns = std::max(1, (int)(dimx/ column_width));
+                    int num_rows = (out.size() + num_columns - 1) / num_columns;
+
+                    // Clear the line below the prompt for display
+                    ncplane_erase_region(*m_p_Plane, m_Line + 1, 0, 1, dimx);
+
+                    // Print completions in a grid
+                    for (int row = 0; row < num_rows; ++row) {
+                        for (int col = 0; col < num_columns; ++col) {
+                            size_t idx = row + col * num_rows;
+                            if (idx < out.size()) {
+                                // Format with fixed width
+                                std::string padded = out[idx] + std::string(column_width - out[idx].size(), ' ');
+                                m_p_Plane->printf(m_Line + 1, col * column_width, "%s", padded.c_str());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -12,8 +12,7 @@
 #define WS_KEY_TOGGLE_STATUS_LINE_MCOMMAND ':'     // Ctrl+S to toggle status line
 #define WS_KEY_TOGGLE_STATUS_LINE_MVISUAL 'v'     // Ctrl+S to toggle status line
 #define WS_KEY_DELETE_TAB 'x'
-#define WS_KEY_SEND_BACKGROUND 'B'
-
+//#define WS_KEY_SEND_BACKGROUND 'B'
 // Shortcut conditions for input handling
 #define WS_ENTER (m_Key == NCKEY_ENTER)
 #define WS_BACKSPACE (m_Key == NCKEY_BACKSPACE )
@@ -29,6 +28,8 @@
 #define WS_STATUS_LINE_MCOMMAND (m_Key == WS_KEY_TOGGLE_STATUS_LINE_MCOMMAND)
 #define WS_STATUS_LINE_MVISUAL (m_Key == WS_KEY_TOGGLE_STATUS_LINE_MVISUAL)
 
+#define WS_TAB (m_Key == NCKEY_TAB)
+
 
 #define WS_ARROW_LEFT (m_Key == NCKEY_LEFT)
 #define WS_ARROW_RIGHT (m_Key == NCKEY_RIGHT)
@@ -36,5 +37,5 @@
 #define WS_CTRL_A (m_Key == 'A' && ncinput_ctrl_p(&m_NcIn))
 #define WS_CTRL_E (m_Key == 'E' && ncinput_ctrl_p(&m_NcIn))
 
-#define WS_SEND_BACKGROUND (m_Key == WS_KEY_SEND_BACKGROUND && ncinput_ctrl_p(&m_NcIn))
+//#define WS_SEND_BACKGROUND (m_Key == WS_KEY_SEND_BACKGROUND && ncinput_ctrl_p(&m_NcIn))
 #endif //wash_shortcut_h

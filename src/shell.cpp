@@ -24,7 +24,6 @@ Shell::Shell(ncpp::Plane *p_stdPlane, ncpp::NotCurses &nc,unsigned DimY,unsigned
 
     Tab &curTab = m_Tabs[m_TabIdx];
 
-
     m_Nc.cursor_enable(curTab.m_Line,curTab.m_ShellLen);
     m_Nc.mouse_enable(NCMICE_ALL_EVENTS);
 }

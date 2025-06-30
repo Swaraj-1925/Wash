@@ -22,6 +22,7 @@
 #include "options.h"
 #include "command/command.h"
 #include "constants.h"
+#include "auto_completion.h"
 // Terminal Modes
 enum T_Mode {
     M_INSERT,
@@ -88,6 +89,7 @@ public:
     int handle_default(uint32_t m_Key);
 
     void handle_prompt();
+    void handle_tab();
     std::string get_mode();
     // Check and update background process statuses
 

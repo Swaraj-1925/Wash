@@ -88,6 +88,8 @@ void Tab::handle_prompt() {
     // Move cursor (strictly after shell)
     int cursor_x = m_ShellLen + m_CursorIdx;
     m_p_Plane->cursor_move(m_Line, cursor_x);
+
+    // start from row, start col,num of row to erase,erase col location
 }
 void Tab::free_args(std::vector<char*>& args) {
     for (auto* ptr : args) {
