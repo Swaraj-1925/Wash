@@ -76,7 +76,7 @@ The following built-in commands are currently implemented in WASH:
 1. Ensure the Notcurses library is installed on your system.
 2. Clone the WASH repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Swaraj-1925/Wash.git
    ```
 3. Navigate to the project directory and compile:
    ```bash
